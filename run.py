@@ -61,33 +61,26 @@ def parse_json(input_string):
         return parsed_json
     else:
         return None
-    
-    
 
 def pretty_task(content):
         return f"[yellow] {content}"
     
     
-def run_task(task_name, model_size="small", provider="openai"):
-    
-    task_family = TaskFamily()
-    tasks = task_family.get_tasks(model_size)
-    
-    task = tasks[task_name]
-    
-    task_string = task['prompt']
-    user_renderables = [
-        Panel(pretty_task(task_string), expand=True),
-    ]
-    console.print(Panel(Columns(user_renderables)))
-                
+def run_task(task_name, benchmark="small", provider="openai"):
     user_id = 1
     run_id = random.getrandbits(32)
     
-    task_family.install(run_id)
-
+    task_family = TaskFamily()
+    prompt = task_family.install(run_id, benchmark, task_name)
+    
+    user_renderables = [
+        Panel(pretty_task(prompt), expand=True),
+    ]
+    console.print(Panel(Columns(user_renderables)))
+                
+    
     supervisor = Supervisor()
-    supervisor_result = supervisor.run(user_id, run_id, task["prompt"], task_name, provider)
+    supervisor_result = supervisor.run(user_id, run_id, prompt, task_name, provider)
 
     return supervisor_result
 
@@ -95,19 +88,19 @@ def run_task(task_name, model_size="small", provider="openai"):
 if __name__ == "__main__":
     argparse = ArgumentParser()
 
-    argparse.add_argument("--task_name", choices=tasks, default="mini_smoke_test", help="The task to run")
+    argparse.add_argument("--task_name", choices=tasks, default="mini_baby_lm", help="The task to run")
     argparse.add_argument("--benchmark", choices=["full_benchmark", "mini_benchmark"], default="mini_benchmark", help="Which benchmark to run")
     argparse.add_argument("--provider", choices=["openai", "anthropic"], default="anthropic", help="The provider to use")
     args = argparse.parse_args()
     task_name = args.task_name
-    model_size = args.model_size
+    benchmark = args.benchmark
     provider = args.provider
 
     print(f"Running task: {task_name}")
     
     start = time.time()
 
-    supervisor_result = run_task(task_name, model_size, provider)
+    supervisor_result = run_task(task_name, benchmark, provider)
     
     end = time.time()
     

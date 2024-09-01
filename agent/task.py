@@ -11,7 +11,6 @@ from agent_tasks import get_task
 
 
 def make_directory(work_dir):
-    os.makedirs(work_dir)
     os.system(
         f"touch {work_dir}/scratchpad.txt"
     )
@@ -29,9 +28,11 @@ class TaskFamily:
     @staticmethod
     def install(run_id, benchmark, task) -> None:
         try:
-            work_dir = os.makedirs(f"{os.getcwd()}/{run_id}")
+            os.makedirs(f"{os.getcwd()}/{run_id}")
+            work_dir = f"{os.getcwd()}/{run_id}"
+            print(f"Work directory: {work_dir}")
             make_directory(work_dir)
-            result = get_task(work_dir, benchmark, task)
+            result = get_task(str(work_dir) + "/", benchmark, task)
             return result['prompt']
         except Exception as e:
             print(f"An error occurred creating the task. Exiting. {str(e)}")

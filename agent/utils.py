@@ -3,35 +3,6 @@ import tiktoken
 import os
 
 
-def make_directory(run_number):
-    try:
-        os.makedirs(f"{os.getcwd()}/{run_number}")
-    except FileExistsError as e:
-        print(f"Directory already exists: {run_number}")
-
-    try:
-        os.system(
-            f"git clone https://github.com/Artifact-AI/nano_gpt_base {os.getcwd()}/{run_number}/nanoGPT"
-        )
-        os.system(  
-            f"python {os.getcwd()}/{run_number}/nanoGPT/data/wiki/prepare.py"
-        )
-    #     os.system(
-    #         f"rm -rf {os.getcwd()}/{self.run_number}/ai_research_bench/agent-eval"
-    #     )
-    #     os.system(
-    #         f"rm -rf {os.getcwd()}/{self.run_number}/ai_research_bench/agent-runner"
-    #     )
-    #     os.system(
-    #         f"rm -rf {os.getcwd()}/{self.run_number}/ai_research_bench/agent-tasks"
-    #     )
-    #     os.system(
-    #         f"rm -rf {os.getcwd()}/{self.run_number}/ai_research_bench/documentation"
-    #     )
-    except Exception as e:
-        print(f"An error occurred downloading minGPT: {str(e)}")
-    return run_number
-
 def count_tokens(string: str, encoding_name: str) -> int:
     """Returns the number of tokens in a text string."""
     encoding = tiktoken.get_encoding(encoding_name)
