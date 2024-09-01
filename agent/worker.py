@@ -22,7 +22,6 @@ from agent.tool_registry import all_tools
 from agent.prompts import get_worker_system_prompt, get_worker_prompt
 from agent.models.anthropic import AnthropicModel
 from agent.models.openai import OpenAIModel
-from agent.utils import make_directory
 
 
 load_dotenv()
@@ -42,7 +41,6 @@ class Worker:
         self.task_number = 0
         self.num_tokens = []
         self.run_number = run_id
-        #make_directory(self.run_number)
         self.start_time = datetime.now()
 
         self.plan_structure = {"subtasks": [], "completed": [], "in_progress": None}
