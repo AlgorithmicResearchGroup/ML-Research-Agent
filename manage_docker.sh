@@ -3,20 +3,20 @@
 # Function to build the Docker image
 build_image() {
     if [ "$#" -ne 3 ]; then
-        echo "Usage: build <image_name> <model_size> <provider>"
+        echo "Usage: build <image_name> <benchmark> <provider>"
         echo "Example: build all-tasks large openai"
         return 1
     fi
 
     IMAGE_NAME=$1
-    MODEL_SIZE=$2
+    BENCHMARK=$2
     PROVIDER=$3
 
-    TAG="${IMAGE_NAME}_${MODEL_SIZE}_${PROVIDER}"
+    TAG="${IMAGE_NAME}_${BENCHMARK}_${PROVIDER}"
 
     echo "Building Docker image with tag: agent:$TAG"
     docker build \
-        --build-arg MODEL_SIZE=$MODEL_SIZE \
+        --build-arg BENCHMARK=$BENCHMARK \
         --build-arg PROVIDER=$PROVIDER \
         -t agent:$TAG .
 
@@ -31,23 +31,23 @@ build_image() {
 # Function to run the Docker container and copy files
 run_container() {
     if [ "$#" -lt 5 ]; then
-        echo "Usage: run <image_name> <model_size> <provider> <gpu_ids> <task_name> [additional docker run arguments]"
+        echo "Usage: run <image_name> <benchmark> <provider> <gpu_ids> <task_name> [additional docker run arguments]"
         echo "Example: run all-tasks large openai 0,1 pretraining_efficiency"
         return 1
     fi
 
     IMAGE_NAME=$1
-    MODEL_SIZE=$2
+    BENCHMARK=$2
     PROVIDER=$3
     GPU_IDS=$4
     TASK_NAME=$5
     shift 5  # Remove the first 5 arguments
 
-    TAG="${IMAGE_NAME}_${MODEL_SIZE}_${PROVIDER}"
-    CONTAINER_NAME="my_gpu_app_${IMAGE_NAME}_${MODEL_SIZE}_${PROVIDER}_${TASK_NAME}"
+    TAG="${IMAGE_NAME}_${BENCHMARK}_${PROVIDER}"
+    CONTAINER_NAME="my_gpu_app_${IMAGE_NAME}_${BENCHMARK}_${PROVIDER}_${TASK_NAME}"
     
     # Set the output directory to /home/paperspace/Desktop/
-    HOST_OUTPUT_DIR="/home/paperspace/Desktop/${IMAGE_NAME}_${MODEL_SIZE}_${PROVIDER}_${TASK_NAME}"
+    HOST_OUTPUT_DIR="/home/paperspace/Desktop/${IMAGE_NAME}_${BENCHMARK}_${PROVIDER}_${TASK_NAME}"
 
     # Ensure the host output directory exists
     mkdir -p "$HOST_OUTPUT_DIR"
@@ -59,13 +59,13 @@ run_container() {
     fi
 
     echo "Running Docker container using GPUs: $GPU_IDS"
-    echo "Command: docker run -it --name $CONTAINER_NAME --gpus \"device=$GPU_IDS\" -e NVIDIA_VISIBLE_DEVICES=$GPU_IDS -e MODEL_SIZE=$MODEL_SIZE -e PROVIDER=$PROVIDER -e TASK_NAME=$TASK_NAME -v \"$HOST_OUTPUT_DIR:/app/output\" $@ agent:$TAG"
+    echo "Command: docker run -it --name $CONTAINER_NAME --gpus \"device=$GPU_IDS\" -e NVIDIA_VISIBLE_DEVICES=$GPU_IDS -e BENCHMARK=$BENCHMARK -e PROVIDER=$PROVIDER -e TASK_NAME=$TASK_NAME -v \"$HOST_OUTPUT_DIR:/app/output\" $@ agent:$TAG"
     
     docker run -it \
         --name $CONTAINER_NAME \
         --gpus "device=$GPU_IDS" \
         -e NVIDIA_VISIBLE_DEVICES=$GPU_IDS \
-        -e MODEL_SIZE=$MODEL_SIZE \
+        -e BENCHMARK=$BENCHMARK \
         -e PROVIDER=$PROVIDER \
         -e TASK_NAME=$TASK_NAME \
         -v "$HOST_OUTPUT_DIR:/app/output" \
@@ -103,8 +103,8 @@ case "$1" in
         ;;
     *)
         echo "Usage: $0 {build|run}"
-        echo "  build <image_name> <model_size> <provider> - Build the Docker image"
-        echo "  run <image_name> <model_size> <provider> <gpu_ids> [additional docker run arguments] - Run the container and copy files"
+        echo "  build <image_name> <benchmark> <provider> - Build the Docker image"
+        echo "  run <image_name> <benchmark> <provider> <gpu_ids> [additional docker run arguments] - Run the container and copy files"
         exit 1
         ;;
 esac

@@ -3,12 +3,12 @@ FROM nvidia/cuda:12.2.2-cudnn8-runtime-ubuntu22.04
 
 # Accept build-time arguments
 ARG TASK_NAME
-ARG MODEL_SIZE
+ARG BENCHMARK
 ARG PROVIDER
 
 ENV DEBIAN_FRONTEND=noninteractive \
     TASK_NAME=$TASK_NAME \
-    MODEL_SIZE=$MODEL_SIZE \
+    BENCHMARK=$BENCHMARK \
     PROVIDER=$PROVIDER \
     NVIDIA_VISIBLE_DEVICES=all
 
@@ -44,9 +44,9 @@ ENV NVIDIA_VISIBLE_DEVICES=all
 
 # Set environment variables from build args
 ENV TASK_NAME=$TASK_NAME
-ENV MODEL_SIZE=$MODEL_SIZE
+ENV BENCHMARK=$BENCHMARK
 ENV PROVIDER=$PROVIDER
 ENV HUGGING_FACE_HUB_TOKEN=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
 
 # Run the Python script
-CMD ["sh", "-c", "python3 run.py --task_name ${TASK_NAME} --model_size ${MODEL_SIZE} --provider ${PROVIDER}"]
+CMD ["sh", "-c", "python3 run.py --task_name ${TASK_NAME} --benchmark ${BENCHMARK} --provider ${PROVIDER}"]
