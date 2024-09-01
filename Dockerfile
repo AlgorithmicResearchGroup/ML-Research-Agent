@@ -36,6 +36,7 @@ COPY . /app
 
 # Install the required Python packages
 RUN pip3 install -r requirements.txt 
+RUN pip3 install -i https://test.pypi.org/simple/ agent-tasks
 
 
 # Set the NVIDIA_VISIBLE_DEVICES environment variable
