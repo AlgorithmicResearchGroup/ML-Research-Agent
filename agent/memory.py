@@ -80,8 +80,8 @@ class AgenMemory:
                 }
             )
 
-            full_output_mems = "Last 5 Attempts\n" + "-" * 100 + "\n"
-            for idx, item in enumerate(memories[-5:]):
+            full_output_mems = "Last 10 Attempts\n" + "-" * 100 + "\n"
+            for idx, item in enumerate(memories[-10:]):
                 formatted_string = "\n".join([f"{value}" for value in item.values()])
                 full_output_mems += (
                     f"Attempt {idx + 1}\n{formatted_string}\n" + "-" * 100 + "\n"

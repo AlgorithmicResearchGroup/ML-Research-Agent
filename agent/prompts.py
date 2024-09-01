@@ -108,7 +108,7 @@ def get_worker_prompt(user_query, plan, run_number,  memories, elapsed_time, pre
 
     You have been trying to complete this goal for {elapsed_minutes:.2f} minutes. You have {remaining_minutes:.2f} minutes left. 
 
-    - Here is the the last 5 actions that you took:
+    - Here is the the last 10 actions that you took:
     {memories}
 
     - Here is what you attempted last time:
@@ -131,8 +131,5 @@ def get_worker_prompt(user_query, plan, run_number,  memories, elapsed_time, pre
         
     - NEVER (!!!) run `return_fn` until you are sure that you have completed the goal and you have beaten the baseline metric.
     - you MUST (!!!) save the model to file IN THE WORKING DIRECTORY before running the `return_fn` tool: As an example 
-    ```
-    torch.save(model.state_dict(), f"{os.getcwd()}/{run_number}/model.pth")
-    ```
     """
     return worker_prompt
