@@ -31,6 +31,7 @@ from agent.tools.scratchpad.scratchpad_tool import (
     scratchpad_tool_definitions,
 )
 from agent.tools.thought.thought_tool import use_thought, thought_tool_definitions
+from agent.tools.long_term_memory.long_term_memory_tool import use_long_term_memory, long_term_memory_tool_definitions
 
 # from agent.tools.code_lookup.code_lookup_tool import code_lookup, code_lookup_tool_definitions
 # from agent.tools.code_search.paper_lookup_tool import paper_lookup, paper_lookup_tool_definitions
@@ -52,6 +53,7 @@ all_tools = collect_all_tools(
     return_fn_tool_definitions,
     scratchpad_tool_definitions,
     thought_tool_definitions,
+    long_term_memory_tool_definitions,
     # code_lookup_tool_definitions,
     # paper_lookup_tool_definitions
 )
@@ -76,6 +78,7 @@ worker_action_map = {
     "get_paper_citations": "paper_id",
     "download_paper": "paper_id",
     "thought": "thought",
+    "long_term_memory": ["query", "run_id"],
     # "lookup_papers": "query",
     # "lookup_code": "query"
 }
@@ -123,6 +126,7 @@ class Tool:
             "get_paper_citations": get_paper_citations,
             "download_paper": download_paper,
             "thought": use_thought,
+            "long_term_memory": use_long_term_memory,
             # "code_lookup": code_lookup,
             # "paper_lookup": paper_lookup
         }

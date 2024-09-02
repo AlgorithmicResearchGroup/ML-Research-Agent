@@ -27,8 +27,7 @@ tasks = [
     "math_reasoning_autoinformalization", 
     "math_reasoning_autotheorem_generation", 
     "math_reasoning_automated_problem_solving_with_code",  
-    "smoke_test", 
-    # mini-tasks
+    # mini tasks
     "mini_llm_efficiency", 
     "mini_baby_lm", 
     "mini_mini_pile", 
@@ -36,7 +35,9 @@ tasks = [
     "mini_llm_merging", 
     "mini_math_reasoning", 
     "mini_smoke_test",
-    "check_gpu",
+    # testing tasks
+    "smoke_test", # train a mlp on mnist
+    "check_gpu", # check that the agent can use the gpu
 ]
 
 console = Console()
@@ -90,7 +91,7 @@ if __name__ == "__main__":
 
     argparse.add_argument("--task_name", choices=tasks, default="mini_baby_lm", help="The task to run")
     argparse.add_argument("--benchmark", choices=["full_benchmark", "mini_benchmark"], default="mini_benchmark", help="Which benchmark to run")
-    argparse.add_argument("--provider", choices=["openai", "anthropic"], default="anthropic", help="The provider to use")
+    argparse.add_argument("--provider", choices=["openai", "anthropic"], default="openai", help="The provider to use")
     args = argparse.parse_args()
     task_name = args.task_name
     benchmark = args.benchmark

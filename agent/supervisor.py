@@ -96,33 +96,26 @@ class Supervisor:
         if self.agent_model == "openai":
             first_tool_call = chat_response.choices[0].message.tool_calls[0]
             function_arguments = first_tool_call.function.arguments
-            # Parse the content as JSON
             arguments_json = json.loads(function_arguments)
-
             plan = arguments_json["plan"]
-
-            final_plans = []
-            subtasks = []
-            for line in plan:
-                subtasks.append(
-                    {
-                        "Subtask": line,
-                    }
-                )
-            final_plans.append(subtasks)
-
         else:
-            plans = [p for p in chat_response.content[1].input["plans"]]
-            final_plans = []
-            for plan in plans:
-                subtasks = []
-                for line in plan["plan"]:
-                    subtasks.append(
-                        {
-                            "Subtask": line,
-                        }
-                    )
-                final_plans.append(subtasks)
+            plan = [p for p in chat_response.content[1].input["plans"]]
+
+        final_plans = []
+        for plan_item in plan:
+            subtasks = []
+            if isinstance(plan_item, dict) and 'plan' in plan_item:
+                for step in plan_item['plan']:
+                    subtasks.append({"Subtask": step})
+            elif isinstance(plan_item, dict) and 'Subtask' in plan_item:
+                if isinstance(plan_item['Subtask'], dict) and 'plan' in plan_item['Subtask']:
+                    for step in plan_item['Subtask']['plan']:
+                        subtasks.append({"Subtask": step})
+                else:
+                    subtasks.append(plan_item)
+            else:
+                subtasks.append({"Subtask": plan_item})
+            final_plans.append(subtasks)
 
         return final_plans
 
@@ -136,12 +129,10 @@ class Supervisor:
                 print("\n")
                 plan_statement = ""
                 for idx, plan in enumerate(plans):
-                    plan_statement += f"Plan {idx} --->\n"
-                    print(plan_statement)
                     for sub_idx, subtask in enumerate(plan):
                         plan_statement += f"{subtask['Subtask']}\n"
-                    print("\n")
-                print("\n")
+                    plan_statement += "\n"
+                print(plan_statement)
 
                 worker = Worker(
                     user_id,
