@@ -26,6 +26,8 @@ The baseline agent can perform the following tasks:
 
 Mini versions of several tasks are also available for quick testing and development.
 
+Please find the full list of tasks along with their prompts and descriptions here: [ML-Research-Agent-Tasks](https://github.com/AlgorithmicResearchGroup/ML-Research-Agent-Tasks)
+
 ## Available Tools
 
 The AI Research Benchmark Baseline Agent comes equipped with a variety of tools to assist in different AI and machine learning tasks:
