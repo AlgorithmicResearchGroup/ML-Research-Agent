@@ -27,8 +27,7 @@ tasks = [
     "math_reasoning_autoinformalization", 
     "math_reasoning_autotheorem_generation", 
     "math_reasoning_automated_problem_solving_with_code",  
-    "smoke_test", 
-    # mini-tasks
+    # mini tasks
     "mini_llm_efficiency", 
     "mini_baby_lm", 
     "mini_mini_pile", 
@@ -36,7 +35,9 @@ tasks = [
     "mini_llm_merging", 
     "mini_math_reasoning", 
     "mini_smoke_test",
-    "check_gpu",
+    # testing tasks
+    "smoke_test", # train a mlp on mnist
+    "check_gpu", # check that the agent can use the gpu
 ]
 
 console = Console()

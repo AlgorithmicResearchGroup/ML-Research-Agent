@@ -101,6 +101,18 @@ Example:
 ./manage_docker.sh run all-tasks mini_benchmark anthropic 0 mini_smoke_test
 ```
 
+
+### Running with Docker
+
+```bash
+./run.sh <benchmark> <provider> <task_name> <env_file_path>
+```
+
+Example:
+```bash
+./run.sh mini_benchmark openai "mini_mini_pile" /home/ubuntu/.env
+```
+
 ## Available Tasks
 
 For a full list of available tasks and their corresponding Docker run commands, please refer to the "Run the Agent" section in the original README file.

@@ -20,7 +20,7 @@ logging.getLogger("sqlalchemy").setLevel(logging.ERROR)
 
 
 class AgentConversation(Base):
-    __tablename__ = "agents_agent_test"
+    __tablename__ = "agents_agent_final_run"
     id = Column(Integer, primary_key=True)
     run_id = Column(BigInteger, nullable=False)
     tool = Column(String)
