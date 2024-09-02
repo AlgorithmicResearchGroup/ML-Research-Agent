@@ -90,7 +90,7 @@ if __name__ == "__main__":
 
     argparse.add_argument("--task_name", choices=tasks, default="mini_baby_lm", help="The task to run")
     argparse.add_argument("--benchmark", choices=["full_benchmark", "mini_benchmark"], default="mini_benchmark", help="Which benchmark to run")
-    argparse.add_argument("--provider", choices=["openai", "anthropic"], default="anthropic", help="The provider to use")
+    argparse.add_argument("--provider", choices=["openai", "anthropic"], default="openai", help="The provider to use")
     args = argparse.parse_args()
     task_name = args.task_name
     benchmark = args.benchmark

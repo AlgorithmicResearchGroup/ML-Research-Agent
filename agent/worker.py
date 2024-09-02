@@ -15,14 +15,13 @@ from sqlalchemy import create_engine, Column, Integer, String, Text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-from agent.memory import AgentConversation, AgenMemory
+from agent.memory import AgentConversation, AgentMemory
 from agent.tool_registry import Tool, worker_action_map
 from agent.memory import Base
 from agent.tool_registry import all_tools
 from agent.prompts import get_worker_system_prompt, get_worker_prompt
 from agent.models.anthropic import AnthropicModel
 from agent.models.openai import OpenAIModel
-
 
 load_dotenv()
 console = Console()
@@ -46,7 +45,7 @@ class Worker:
         self.plan_structure = {"subtasks": [], "completed": [], "in_progress": None}
         self.system_prompt = get_worker_system_prompt(self.run_number)
         
-        self.memory = AgenMemory()
+        self.memory = AgentMemory()
 
     def pretty_attempt(self, content):
         return f"[yellow] Total Tokens: {sum(self.num_tokens)} --> Previous Attempt: {content}"
@@ -167,14 +166,14 @@ class Worker:
         self.task_number = 0
 
         self.memory.save_conversation_memory(
-                self.user_id,
-                self.run_id,
-                previous_subtask_tool, 
-                previous_subtask_result, 
-                previous_subtask_attempt, 
-                previous_subtask_output, 
-                previous_subtask_errors
-                )
+            self.user_id,
+            self.run_id,
+            previous_subtask_tool, 
+            previous_subtask_result, 
+            previous_subtask_attempt, 
+            previous_subtask_output, 
+            previous_subtask_errors
+        )
 
         while True:
             current_time = datetime.now()
@@ -189,30 +188,20 @@ class Worker:
             if self.task_number > 0:
                 try:
                     previous_subtask_tool = subtask_response["subtask_result"]["tool"]
-                    previous_subtask_result = subtask_response["subtask_result"][
-                        "status"
-                    ]
-                    previous_subtask_attempt = subtask_response["subtask_result"][
-                        "attempt"
-                    ]
-                    previous_subtask_output = subtask_response["subtask_result"][
-                        "stdout"
-                    ]
-                    previous_subtask_errors = subtask_response["subtask_result"][
-                        "stderr"
-                    ]
-                    # Create and add new records
-                    self.memory.save_conversation_memory(
-                            self.user_id,
-                            self.run_id,
-                            previous_subtask_tool, 
-                            previous_subtask_result, 
-                            previous_subtask_attempt, 
-                            previous_subtask_output, 
-                            previous_subtask_errors
-                            )
-                            
+                    previous_subtask_result = subtask_response["subtask_result"]["status"]
+                    previous_subtask_attempt = subtask_response["subtask_result"]["attempt"]
+                    previous_subtask_output = subtask_response["subtask_result"]["stdout"]
+                    previous_subtask_errors = subtask_response["subtask_result"]["stderr"]
                     
+                    self.memory.save_conversation_memory(
+                        self.user_id,
+                        self.run_id,
+                        previous_subtask_tool, 
+                        previous_subtask_result, 
+                        previous_subtask_attempt, 
+                        previous_subtask_output, 
+                        previous_subtask_errors
+                    )
                 except:
                     if isinstance(subtask_response, str):
                         panel = Panel(
@@ -223,24 +212,20 @@ class Worker:
                         print(subtask_response)
 
                     previous_subtask_tool = "thought"
-                    previous_subtask_attempt = (
-                        f"You had the thought: {subtask_response}"
-                    )
-                    
+                    previous_subtask_attempt = f"You had the thought: {subtask_response}"
                     previous_subtask_result = "You had a thought"
                     previous_subtask_output = "you must now use a tool to complete the task"
                     previous_subtask_errors = "None"
                     
-                    
                     self.memory.save_conversation_memory(
-                            self.user_id,
-                            self.run_id,
-                            previous_subtask_tool, 
-                            previous_subtask_result, 
-                            previous_subtask_attempt, 
-                            previous_subtask_output, 
-                            previous_subtask_errors
-                            )
+                        self.user_id,
+                        self.run_id,
+                        previous_subtask_tool, 
+                        previous_subtask_result, 
+                        previous_subtask_attempt, 
+                        previous_subtask_output, 
+                        previous_subtask_errors
+                    )
 
             results.append(subtask_response)
             self.task_number += 1
