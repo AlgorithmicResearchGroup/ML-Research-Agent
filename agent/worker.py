@@ -71,19 +71,20 @@ class Worker:
         #print(f"Prompt: {self.prompt}")
 
         try:
-            if isinstance(previous_subtask_attempt, str):
-                user_renderables = [
-                    Panel(self.pretty_attempt(previous_subtask_attempt), expand=True),
-                    Panel(self.pretty_output(previous_subtask_output), expand=True),
-                ]
-                console.print(Panel(Columns(user_renderables)))
-            else:
-                print(
-                    f"""
-                        Previous Attempt: {previous_subtask_attempt}
-                        Previous Output: {previous_subtask_output}
-                      """
-                )
+            if self.task_number > 0:  # Only print if it's not the first iteration
+                if isinstance(previous_subtask_attempt, str):
+                    user_renderables = [
+                        Panel(self.pretty_attempt(previous_subtask_attempt), expand=True),
+                        Panel(self.pretty_output(previous_subtask_output), expand=True),
+                    ]
+                    console.print(Panel(Columns(user_renderables)))
+                else:
+                    print(
+                        f"""
+                            Previous Attempt: {previous_subtask_attempt}
+                            Previous Output: {previous_subtask_output}
+                        """
+                    )
 
             if self.agent_model == "openai":
                 response_data, num_tokens = OpenAIModel(self.system_prompt, all_tools).generate_response(self.prompt)
