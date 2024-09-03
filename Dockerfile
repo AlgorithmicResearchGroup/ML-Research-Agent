@@ -47,7 +47,6 @@ ENV NVIDIA_VISIBLE_DEVICES=all
 ENV TASK_NAME=$TASK_NAME
 ENV BENCHMARK=$BENCHMARK
 ENV PROVIDER=$PROVIDER
-ENV HUGGING_FACE_HUB_TOKEN=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
 
 # Run the Python script
 CMD ["sh", "-c", "python3 run.py --task_name ${TASK_NAME} --benchmark ${BENCHMARK} --provider ${PROVIDER}"]

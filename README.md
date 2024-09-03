@@ -80,28 +80,6 @@ To run the agent without Docker, use the following command:
 python3 run.py --task_name mini_smoke_test --benchmark mini_benchmark --provider openai
 ```
 
-
-### Running with Docker
-
-1. Build the Docker image:
-   ```bash
-   ./manage_docker.sh build all-tasks mini_benchmark <provider>
-   ```
-   Replace `<provider>` with either `anthropic` or `openai`.
-
-2. Run the agent:
-   ```bash
-   ./manage_docker.sh run all-tasks mini_benchmark <provider> 0 <task_name>
-   ```
-   Replace `<provider>` with the chosen provider and `<task_name>` with the desired task.
-
-Example:
-
-```
-./manage_docker.sh run all-tasks mini_benchmark anthropic 0 mini_smoke_test
-```
-
-
 ### Running with Docker
 
 ```bash
