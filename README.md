@@ -105,12 +105,12 @@ Example:
 ### Running with Docker
 
 ```bash
-./run.sh <benchmark> <provider> <task_name> <env_file_path>
+bash run.sh <image_name> <benchmark> <provider> <gpu_ids> <task_name> <time_limit> <env_file_path>
 ```
 
 Example:
 ```bash
-./run.sh mini_benchmark openai "mini_mini_pile" /home/ubuntu/.env
+bash run.sh algorithmicresearch/agent:latest mini_benchmark openai 0 mini_mini_pile 2h /home/ubuntu/.env
 ```
 
 ## Available Tasks
