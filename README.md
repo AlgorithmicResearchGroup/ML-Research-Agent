@@ -1,6 +1,6 @@
 # ML Research Benchmark Baseline Agent
 
-The ML Research Benchmark Baseline Agent is a multi-agent system designed to serve as a baseline for various AI and machine learning tasks. This agent provides a foundation for comparing and evaluating more advanced AI systems across a range of research areas.
+The ML Research Benchmark Baseline Agent is a multi-agent system designed to serve as a baseline for various AI and machine learning tasks. This agent provides a foundation for comparing and evaluating machine learning research and development tasks that agents can perform.
 
 ## Features
 
