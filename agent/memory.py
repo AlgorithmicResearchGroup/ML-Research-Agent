@@ -7,7 +7,6 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.dialects.postgresql import ARRAY
 from sentence_transformers import SentenceTransformer
-from sklearn.metrics.pairwise import cosine_similarity
 
 
 Base = declarative_base()
@@ -87,36 +86,11 @@ class AgentMemory:
                     "stderr": conversation.stderr,
                 })
 
-            # Long-term memory (vector search)
-            query_embedding = self.encoder.encode(f"Run ID: {run_id}")
-            all_conversations = session.query(AgentConversation).all()
-            similarities = []
-            for conv in all_conversations:
-                similarity = cosine_similarity([query_embedding], [conv.embedding])[0][0]
-                similarities.append((conv, similarity))
-            
-            similarities.sort(key=lambda x: x[1], reverse=True)
-            long_term_conversations = similarities[:5]
-            
-            long_term_memories = [{
-                "tool": conv.tool,
-                "status": conv.status,
-                "attempt": conv.attempt,
-                "stdout": conv.stdout,
-                "stderr": conv.stderr,
-                "similarity": sim
-            } for conv, sim in long_term_conversations]
-
             # Combine short-term and long-term memories
             full_output_mems = "Short-term Memory (Last 5 steps)\n" + "-" * 100 + "\n"
             for idx, item in enumerate(short_term_memories):
                 formatted_string = "\n".join([f"{key}: {value}" for key, value in item.items()])
                 full_output_mems += f"Step {idx + 1}\n{formatted_string}\n" + "-" * 100 + "\n"
-
-            full_output_mems += "\nLong-term Memory (Similar past experiences)\n" + "-" * 100 + "\n"
-            for idx, item in enumerate(long_term_memories):
-                formatted_string = "\n".join([f"{key}: {value}" for key, value in item.items() if key != 'similarity'])
-                full_output_mems += f"Experience {idx + 1} (Similarity: {item['similarity']:.4f})\n{formatted_string}\n" + "-" * 100 + "\n"
 
             return full_output_mems
         finally:

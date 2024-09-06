@@ -36,7 +36,7 @@ tasks = [
     "mini_math_reasoning", 
     "mini_smoke_test",
     # testing tasks
-    "smoke_test", # train a mlp on mnist
+    "mini_smoke_test", # train a mlp on mnist
     "check_gpu", # check that the agent can use the gpu
 ]
 
