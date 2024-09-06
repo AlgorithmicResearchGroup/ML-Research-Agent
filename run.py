@@ -11,34 +11,8 @@ from rich.table import Table
 from rich.columns import Columns
 import re
 import json
+import click
 # from agent_eval import agent
-
-tasks = [
-    #full tasks
-    "llm_efficiency", 
-    "baby_lm", 
-    "mini_pile", 
-    "budget_model_training", 
-    "budget_inference", 
-    "llm_merging", 
-    "edge_llm_compression", 
-    "edge_llm_training", 
-    "math_reasoning_autoformalization", 
-    "math_reasoning_autoinformalization", 
-    "math_reasoning_autotheorem_generation", 
-    "math_reasoning_automated_problem_solving_with_code",  
-    # mini tasks
-    "mini_llm_efficiency", 
-    "mini_baby_lm", 
-    "mini_mini_pile", 
-    "mini_budget_inference", 
-    "mini_llm_merging", 
-    "mini_math_reasoning", 
-    "mini_smoke_test",
-    # testing tasks
-    "smoke_test", # train a mlp on mnist
-    "check_gpu", # check that the agent can use the gpu
-]
 
 console = Console()
 
@@ -67,12 +41,9 @@ def pretty_task(content):
         return f"[yellow] {content}"
     
     
-def run_task(task_name, benchmark="small", provider="openai"):
+def run_task(prompt, provider="openai"):
     user_id = 1
     run_id = random.getrandbits(32)
-    
-    task_family = TaskFamily()
-    prompt = task_family.install(run_id, benchmark, task_name)
     
     user_renderables = [
         Panel(pretty_task(prompt), expand=True),
@@ -81,27 +52,24 @@ def run_task(task_name, benchmark="small", provider="openai"):
                 
     
     supervisor = Supervisor()
-    supervisor_result = supervisor.run(user_id, run_id, prompt, task_name, provider)
+    supervisor_result = supervisor.run(user_id, run_id, prompt, provider)
 
     return supervisor_result
 
 
-if __name__ == "__main__":
-    argparse = ArgumentParser()
+"""
+Example:
 
-    argparse.add_argument("--task_name", choices=tasks, default="mini_baby_lm", help="The task to run")
-    argparse.add_argument("--benchmark", choices=["full_benchmark", "mini_benchmark"], default="mini_benchmark", help="Which benchmark to run")
-    argparse.add_argument("--provider", choices=["openai", "anthropic"], default="openai", help="The provider to use")
-    args = argparse.parse_args()
-    task_name = args.task_name
-    benchmark = args.benchmark
-    provider = args.provider
+python3 run.py --prompt "write an article on the history of python" --provider openai
+"""
 
-    print(f"Running task: {task_name}")
-    
+@click.command()
+@click.option('--prompt', type=str, help='The prompt to run')
+@click.option('--provider', type=click.Choice(['openai', 'anthropic']), default='openai', help='The provider to use')
+def main(prompt, provider):
     start = time.time()
 
-    supervisor_result = run_task(task_name, benchmark, provider)
+    supervisor_result = run_task(prompt, provider)
     
     end = time.time()
     
@@ -116,7 +84,6 @@ if __name__ == "__main__":
         table.add_column("Mertic", justify="right", style="cyan")
         table.add_column("Value", style="magenta")
         
-        table.add_row("Task Name", str(task_name))
         table.add_row("Run ID", str(supervisor_result['run_number']))
         table.add_row("Submission", str(result['subtask_result']['submission']))
         table.add_row("Model Path", str(result['subtask_result']['model_path']))
@@ -135,7 +102,6 @@ if __name__ == "__main__":
         
         
     print_markdown_table([
-        ("Task Number", task_name),
         ("Run ID", supervisor_result['run_number']),
         ("Submission", result['subtask_result']['submission']),
         ("Model Path", result['subtask_result']['model_path']),
@@ -148,3 +114,7 @@ if __name__ == "__main__":
     
 
     print("Task complete")
+
+
+if __name__ == "__main__":
+    main()

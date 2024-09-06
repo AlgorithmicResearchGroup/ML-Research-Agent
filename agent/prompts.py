@@ -57,22 +57,28 @@ def get_worker_system_prompt(run_number):
 
 
 
-def get_worker_prompt(user_query, plan, run_number,  memories, elapsed_time, previous_subtask_attempt, previous_subtask_output, previous_subtask_errors):
+def get_worker_prompt(user_query, plan, run_number, memories, elapsed_time, previous_subtask_attempt, previous_subtask_output, previous_subtask_errors, current_todo_status):
     elapsed_minutes = elapsed_time.total_seconds() / 60
     task_duration_minutes = 2 * 60
     remaining_minutes = task_duration_minutes - elapsed_minutes
     worker_prompt = f"""
-    Goal to complete: {user_query}
+    
+    GOAL TO COMPLETE: {user_query}
+    You've spent {elapsed_minutes:.2f} minutes on this goal. You have {remaining_minutes:.2f} minutes remaining.
     Working directory: {os.getcwd()}/{run_number}
-    Plan outline:
-    {plan}
-    Time spent: {elapsed_minutes:.2f} minutes. Remaining: {remaining_minutes:.2f} minutes.
-    Last 10 actions:
+    
+    Here is the current Todo List:
+    {current_todo_status}
+    
+    Last 3 actions:
     {memories}
-    Previous attempt:
+    
+    Here is what you did last:
     {previous_subtask_attempt}
-    Previous output:
+    
+    Here is what you got out of it:
     {previous_subtask_output}
+    
     Additional output: {previous_subtask_errors}
     Instructions:
     - Use the scratchpad tool to record important information.
@@ -80,6 +86,12 @@ def get_worker_prompt(user_query, plan, run_number,  memories, elapsed_time, pre
     - Access past experiences with the long_term_memory tool.
     - Use return_fn only when the goal is completed and the baseline metric is beaten.
     - Save the model to the working directory before using return_fn.
+    - When you've completed a step, update the todo list using the update_todo tool.
+    - You can report multiple completed steps by providing a list of step descriptions.
+    - Only mark a step as completed when you are certain it has been fully implemented and tested.
+    - Always report completed steps, even if you complete multiple steps in one action.
+    - Review the Current Todo List carefully and focus on completing the next pending task.
+    - If you're thinking or planning, use the 'thought' key in your response.
     Proceed with the next step to complete the goal.
     """
     return worker_prompt

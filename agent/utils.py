@@ -3,6 +3,21 @@ import tiktoken
 import os
 
 
+def make_directory(run_number):
+    try:
+        os.makedirs(f"{os.getcwd()}/{run_number}")
+    except FileExistsError as e:
+        print(f"Directory already exists: {run_number}")
+
+    try:
+        os.system(
+            f"touch {os.getcwd()}{run_number}/scratchpad.txt"
+        )
+    except Exception as e:
+        print(f"An error occurred downloading minGPT: {str(e)}")
+    return run_number
+
+
 def count_tokens(string: str, encoding_name: str) -> int:
     """Returns the number of tokens in a text string."""
     encoding = tiktoken.get_encoding(encoding_name)

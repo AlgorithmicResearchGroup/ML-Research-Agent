@@ -32,8 +32,6 @@ class OpenAIModel:
         
         truncated_prompt = self.truncate_prompt(prompt, available_tokens)
         
-        #print(f"Truncated prompt: {truncated_prompt}")
-        
         response = self.oai_client.chat.completions.create(
             model="gpt-4o",
             messages=[

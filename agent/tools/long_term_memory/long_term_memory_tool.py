@@ -25,9 +25,9 @@ class LongTermMemory:
     def __init__(self):
         self.memory = AgentMemory()
 
-    def access_memory(self, query, run_id):
+    def access_memory(self, query, run_id, previous_subtask_output):
         try:
-            memories = self.memory.search_memories(query, run_id)
+            memories = self.memory.get_conversation_memory(run_id, previous_subtask_output)
             return {
                 "tool": "long_term_memory",
                 "status": "success",

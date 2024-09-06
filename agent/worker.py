@@ -10,6 +10,7 @@ from rich import print
 from rich.panel import Panel
 from rich.text import Text
 from rich.console import Console
+from rich.table import Table
 from rich.columns import Columns
 from sqlalchemy import create_engine, Column, Integer, String, Text
 from sqlalchemy.ext.declarative import declarative_base
@@ -22,6 +23,8 @@ from agent.tool_registry import all_tools
 from agent.prompts import get_worker_system_prompt, get_worker_prompt
 from agent.models.anthropic import AnthropicModel
 from agent.models.openai import OpenAIModel
+from agent.utils import make_directory
+from agent.tools.thought.thought_tool import update_multiple_tasks
 
 load_dotenv()
 console = Console()
@@ -41,11 +44,54 @@ class Worker:
         self.num_tokens = []
         self.run_number = run_id
         self.start_time = datetime.now()
+        
+        self.todo_list = self.initialize_todo_list(plan)
 
         self.plan_structure = {"subtasks": [], "completed": [], "in_progress": None}
         self.system_prompt = get_worker_system_prompt(self.run_number)
         
         self.memory = AgentMemory()
+    
+    def initialize_todo_list(self, plan):
+        return [{"task": step.strip(), "status": "pending"} for step in plan.split('\n') if step.strip()]
+    
+    def update_task_status(self, tasks):
+        if isinstance(tasks, dict):  # Single task update
+            tasks = [tasks]
+        
+        updated_tasks = []
+        for task in tasks:
+            task_description = task['task']
+            status = task['status']
+            updated = False
+            for todo_task in self.todo_list:
+                if todo_task['task'].strip().lower() == task_description.strip().lower():
+                    todo_task["status"] = status
+                    updated = True
+                    updated_tasks.append(f"Task: {task_description}, New status: {status}")
+                    break
+            
+            if not updated:
+                print(f"Task '{task_description}' not found in the todo list.")
+    
+        # Update the todo list using the update_multiple_tasks tool
+        todo_string = self.get_current_todo_status()
+        update_result = update_multiple_tasks({"tasks": tasks})
+        return update_result
+    
+    def get_current_todo_status(self):
+        return "\n".join([f"[{'x' if task['status'] == 'completed' else ' '}] {task['task']}" for task in self.todo_list])
+    
+    def print_todo_list(self):
+        table = Table(title="Todo List")
+        table.add_column("Status", style="cyan", no_wrap=True)
+        table.add_column("Task", style="magenta")
+
+        for task in self.todo_list:
+            status = "✅" if task["status"] == "completed" else "⏳"
+            table.add_row(status, task["task"])
+
+        console.print(table)
 
     def pretty_attempt(self, content):
         return f"[yellow] Total Tokens: {sum(self.num_tokens)} --> Previous Attempt: {content}"
@@ -53,9 +99,8 @@ class Worker:
     def pretty_output(self, content):
         return f"[blue] Total Tokens: {sum(self.num_tokens)} --> Previous Output: {content}"
     
-
     def run_subtask(self, previous_subtask_attempt, previous_subtask_output, previous_subtask_errors, elapsed_time) -> dict:
-        memories = self.memory.get_conversation_memory(self.run_id)
+        memories = self.memory.get_conversation_memory(self.run_id, previous_subtask_output)
         
         self.prompt = get_worker_prompt(
             self.user_query, 
@@ -65,10 +110,9 @@ class Worker:
             elapsed_time,
             previous_subtask_attempt, 
             previous_subtask_output, 
-            previous_subtask_errors
+            previous_subtask_errors,
+            self.get_current_todo_status()
         )
-        
-        #print(f"Prompt: {self.prompt}")
 
         try:
             if self.task_number > 0:  # Only print if it's not the first iteration
@@ -90,9 +134,19 @@ class Worker:
                 response_data, num_tokens = OpenAIModel(self.system_prompt, all_tools).generate_response(self.prompt)
             else:
                 response_data, num_tokens = AnthropicModel(self.system_prompt, all_tools).generate_response(self.prompt)
-
+                
             self.num_tokens.append(num_tokens)
             print(f"Number of tokens: {num_tokens}")
+            
+            # Process the response to update the todo list
+            if isinstance(response_data, dict) and 'completed_step' in response_data:
+                update_result = self.update_task_status([{"task": response_data['completed_step'], "status": "completed"}])
+                print(f"Todo list update result: {update_result}")
+            elif isinstance(response_data, dict) and 'tasks' in response_data:
+                update_result = self.update_task_status(response_data['tasks'])
+                print(f"Todo list update result: {update_result}")
+            
+            self.print_todo_list()
 
             if not response_data:
                 print("No response data found.")
@@ -107,7 +161,6 @@ class Worker:
                     # Check if val is a string and directly check for existence
                     if isinstance(val, str):
                         if val in response_data:
-                            # print(f"Action {key} is applicable with {val}")
                             tool_output = Tool(
                                 {
                                     "type": "function",
@@ -124,7 +177,6 @@ class Worker:
                         if all(
                             k in response_data for k in val
                         ):  # All keys in the list must be in response_data
-                            # print(f"Action {key} is applicable with {val}")
                             tool_output = Tool(
                                 {
                                     "type": "function",
@@ -152,9 +204,6 @@ class Worker:
                 "stderr": "None",
             }
             return {"subtask_result": out, "attempted": "no"}
-
-
-
 
     def process_subtasks(self):
         results = []

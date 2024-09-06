@@ -30,12 +30,8 @@ from agent.tools.scratchpad.scratchpad_tool import (
     use_scratchpad,
     scratchpad_tool_definitions,
 )
-from agent.tools.thought.thought_tool import use_thought, thought_tool_definitions
+from agent.tools.thought.thought_tool import use_thought, update_todo, update_multiple_tasks, thought_tool_definitions
 from agent.tools.long_term_memory.long_term_memory_tool import use_long_term_memory, long_term_memory_tool_definitions
-
-# from agent.tools.code_lookup.code_lookup_tool import code_lookup, code_lookup_tool_definitions
-# from agent.tools.code_search.paper_lookup_tool import paper_lookup, paper_lookup_tool_definitions
-
 
 def collect_all_tools(*lists):
     merged_list = []
@@ -54,8 +50,6 @@ all_tools = collect_all_tools(
     scratchpad_tool_definitions,
     thought_tool_definitions,
     long_term_memory_tool_definitions,
-    # code_lookup_tool_definitions,
-    # paper_lookup_tool_definitions
 )
 
 
@@ -63,7 +57,6 @@ worker_action_map = {
     "run_python": "filepath",
     "run_bash": "script",
     "return_fn": ["submission", "model_path"],
-    #"read_code": "path",
     "write_code": ["path", "code"],
     "insert_code": ["path", "target", "new_code"],
     "replace_code": ["path", "old_code", "new_code"],
@@ -79,6 +72,8 @@ worker_action_map = {
     "download_paper": "paper_id",
     "thought": "thought",
     "long_term_memory": ["query", "run_id"],
+    "update_todo": "todo",
+    "update_multiple_tasks": "tasks",
     # "lookup_papers": "query",
     # "lookup_code": "query"
 }
@@ -112,7 +107,6 @@ class Tool:
             "run_python": run_python,
             "run_bash": run_bash,
             "return_fn": return_fn,
-            #"read_code": read_code_tool,
             "write_code": write_code,
             "insert_code": insert_code,
             "replace_code": replace_code,
@@ -126,6 +120,8 @@ class Tool:
             "get_paper_citations": get_paper_citations,
             "download_paper": download_paper,
             "thought": use_thought,
+            "update_todo": update_todo,
+            "update_multiple_tasks": update_multiple_tasks,
             "long_term_memory": use_long_term_memory,
             # "code_lookup": code_lookup,
             # "paper_lookup": paper_lookup

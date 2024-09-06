@@ -119,13 +119,12 @@ class Supervisor:
 
         return final_plans
 
-    def run(self, user_id, run_id, task, task_name, provider):
+    def run(self, user_id, run_id, task, provider):
         if task:
             try:
                 print("Running agent...")
                 agent_plan = self.generate_plan(task)
                 plans = self.parse_chat_response_to_subtasks(agent_plan)
-                print(f"Plan generated for {task_name}.....:")
                 print("\n")
                 plan_statement = ""
                 for idx, plan in enumerate(plans):
