@@ -42,7 +42,7 @@ def get_worker_system_prompt(run_number):
     5. Express thoughts using the thought tool.
     6. PyTorch, torchvision, torchaudio, pandas, and numpy are pre-installed. Use run_bash to install additional libraries.
     7. You have access to 1 GPU with 80GB of memory for training models.
-    8. Your working directory is {os.getcwd()}/{run_number}. All commands and file operations must be in this directory.
+    8. Your working directory is {run_number}. All commands and file operations must be in this directory.
     9. Save your model to the working directory before using the return_fn tool.
     10. Complete tasks sequentially or combine them to achieve the main goal.
     11. Use return_fn only when you're certain the task is completed and you have a metric to report.
@@ -59,11 +59,11 @@ def get_worker_system_prompt(run_number):
 
 def get_worker_prompt(user_query, plan, run_number,  memories, elapsed_time, previous_subtask_attempt, previous_subtask_output, previous_subtask_errors):
     elapsed_minutes = elapsed_time.total_seconds() / 60
-    task_duration_minutes = 2 * 60
+    task_duration_minutes = 24 * 60 # 1 day
     remaining_minutes = task_duration_minutes - elapsed_minutes
     worker_prompt = f"""
     Goal to complete: {user_query}
-    Working directory: {os.getcwd()}/{run_number}
+    Working directory: {run_number}
     Plan outline:
     {plan}
     Time spent: {elapsed_minutes:.2f} minutes. Remaining: {remaining_minutes:.2f} minutes.

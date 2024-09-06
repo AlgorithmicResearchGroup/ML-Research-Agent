@@ -19,14 +19,11 @@ tasks = [
     "baby_lm", 
     "mini_pile", 
     "budget_model_training", 
-    "budget_inference", 
+    "budget_model_inference", 
     "llm_merging", 
     "edge_llm_compression", 
     "edge_llm_training", 
-    "math_reasoning_autoformalization", 
-    "math_reasoning_autoinformalization", 
-    "math_reasoning_autotheorem_generation", 
-    "math_reasoning_automated_problem_solving_with_code",  
+    "math_reasoning", 
     # mini tasks
     "mini_llm_efficiency", 
     "mini_baby_lm", 
@@ -36,7 +33,7 @@ tasks = [
     "mini_math_reasoning", 
     "mini_smoke_test",
     # testing tasks
-    "mini_smoke_test", # train a mlp on mnist
+    "smoke_test", # train a mlp on mnist
     "check_gpu", # check that the agent can use the gpu
 ]
 
