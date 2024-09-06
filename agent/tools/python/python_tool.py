@@ -39,7 +39,6 @@ class StreamToConsole(io.StringIO):
 
 class PythonRunnerActor:
     def __init__(self):
-        # Initialize an IPython shell instance for running Python code interactively
         self.shell = InteractiveShell.instance()
 
     def execute_python_code(self, filepath, timeout=10000):
@@ -59,28 +58,29 @@ class PythonRunnerActor:
             "stderr": "",
         }
         try:
-            # Execute the code
             if os.path.isfile(filepath):
                 with open(filepath, "r") as file:
                     code = file.read()
-                    with capture_output() as captured:
-                        out = self.shell.run_cell(code)
-                    # Printing captured output for real-time display
-                    sys.stdout.write(captured.stdout)
-                    sys.stderr.write(captured.stderr)
+                    # Execute the code line by line
+                    for line in code.split('\n'):
+                        with capture_output() as captured:
+                            out = self.shell.run_cell(line)
+                        # Print captured output immediately
+                        sys.stdout.write(captured.stdout)
+                        sys.stderr.write(captured.stderr)
+                        sys.stdout.flush()
+                        sys.stderr.flush()
+                        if not out.success:
+                            result["stderr"] += captured.stderr
+                            break
                     if out.success:
                         result["status"] = "success"
-                    else:
-                        result["stderr"] = stderr_capture.getvalue()
-
             else:
                 raise FileNotFoundError(f"File not found: {filepath}")
 
-            # Capture the last 500 characters of stdout
             result["stdout"] = stdout_capture.getvalue()[-500:]
 
         except Exception as e:
-            # Handling unexpected errors
             result["stderr"] = str(e)
         finally:
             sys.stdout = stdout_original
