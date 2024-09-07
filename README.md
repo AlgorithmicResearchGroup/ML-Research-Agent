@@ -9,6 +9,9 @@ The ML Research Benchmark Baseline Agent is a multi-agent system designed to ser
 - Dockerized for easy deployment and reproducibility
 - Configurable for various benchmark scenarios
 
+
+[![Example Video](./img/example1.png)](https://www.youtube.com/watch?v=Xhpe8MHk56w)
+
 ## Available Tasks
 
 The baseline agent can perform the following tasks:
@@ -77,7 +80,7 @@ These tools can be used individually or in combination to tackle a wide range of
 To run the agent without Docker, use the following command:
 
 ```bash
-python3 run.py --task_name mini_smoke_test --benchmark mini_benchmark --provider openai
+python3 run.py --task_name smoke_test --benchmark mini_benchmark --provider openai
 ```
 
 ### Running with Docker
@@ -93,7 +96,7 @@ bash run.sh algorithmicresearch/agent:latest mini_benchmark openai 0 mini_mini_p
 
 ## Available Tasks
 
-For a full list of available tasks and their corresponding Docker run commands, please refer to the "Run the Agent" section in the original README file.
+For a full list of available tasks and their corresponding Docker run commands, please refer to tasks repo here: [ML-Research-Agent-Tasks](https://github.com/AlgorithmicResearchGroup/ML-Research-Agent-Tasks)
 
 ## Contributing
 
