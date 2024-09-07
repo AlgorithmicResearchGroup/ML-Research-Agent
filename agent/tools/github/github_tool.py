@@ -1,5 +1,6 @@
 import requests
 import base64
+import os
 
 
 github_tool_definitions = [
@@ -54,7 +55,7 @@ github_tool_definitions = [
 
 class GitHubRepoActor:
     def __init__(self, repo_url, access_token=None):
-        self.access_token = "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"
+        self.access_token = os.environ.get("GITHUB_ACCESS_TOKEN")
         self.repo_url = repo_url
         self.access_token = self.access_token
         self.api_url = self.get_api_url()
