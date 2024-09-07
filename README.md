@@ -96,7 +96,7 @@ bash run.sh algorithmicresearch/agent:latest mini_benchmark openai 0 mini_mini_p
 
 ## Available Tasks
 
-For a full list of available tasks and their corresponding Docker run commands, please refer to the "Run the Agent" section in the original README file.
+For a full list of available tasks and their corresponding Docker run commands, please refer to tasks repo here: [ML-Research-Agent-Tasks](https://github.com/AlgorithmicResearchGroup/ML-Research-Agent-Tasks)
 
 ## Contributing
 
