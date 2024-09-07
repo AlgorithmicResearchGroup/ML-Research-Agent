@@ -76,7 +76,18 @@ These tools can be used individually or in combination to tackle a wide range of
 
 ## Usage
 
-### Running without Docker
+### Bring your own task
+
+```bash
+python3 run.py --prompt <description_of_the_task> --provider <provider_name>
+
+
+# Example
+python3 run.py --prompt "write an article on the history of python" --provider openai
+```
+
+
+### Running on Benchmark without Docker
 
 To run the agent without Docker, use the following command:
 
@@ -84,7 +95,7 @@ To run the agent without Docker, use the following command:
 python3 run.py --task_name smoke_test --benchmark mini_benchmark --provider openai
 ```
 
-### Running with Docker
+### Running on Benchmark with Docker
 
 ```bash
 bash run.sh <image_name> <benchmark> <provider> <gpu_ids> <task_name> <time_limit> <env_file_path>
