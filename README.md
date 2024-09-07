@@ -10,6 +10,7 @@ The ML Research Benchmark Baseline Agent is a multi-agent system designed to ser
 - Configurable for various benchmark scenarios
 
 
+
 [![Example Video](./img/example1.png)](https://www.youtube.com/watch?v=Xhpe8MHk56w)
 
 ## Available Tasks
