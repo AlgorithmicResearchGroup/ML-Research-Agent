@@ -15,26 +15,25 @@ import json
 
 tasks = [
     #full tasks
-    "llm_efficiency", 
-    "baby_lm", 
-    "mini_pile", 
-    "budget_model_training", 
-    "budget_model_inference", 
-    "llm_merging", 
-    "edge_llm_compression", 
-    "edge_llm_training", 
-    "math_reasoning", 
+    "llm_efficiency", #1
+    "baby_lm", #2
+    "mini_pile", #3
+    "budget_model_training", #4
+    "budget_model_inference", #5
+    "llm_merging", #6
+    "edge_llm_compression", #7
+    "edge_llm_training", #8
+    "math_reasoning", #9
     # mini tasks
-    "mini_llm_efficiency", 
-    "mini_baby_lm", 
-    "mini_mini_pile", 
-    "mini_budget_inference", 
-    "mini_llm_merging", 
-    "mini_math_reasoning", 
-    "mini_smoke_test",
-    # testing tasks
-    "smoke_test", # train a mlp on mnist
-    "check_gpu", # check that the agent can use the gpu
+    "mini_llm_efficiency", #1
+    "mini_baby_lm", #2
+    "mini_mini_pile", #3
+    "mini_budget_model_training", #4
+    "mini_budget_model_inference", #5
+    "mini_llm_merging", #6
+    "mini_edge_llm_compression", #7
+    "mini_edge_llm_training", #8
+    "mini_math_reasoning", #9
 ]
 
 console = Console()
