@@ -36,6 +36,7 @@ tasks = [
     "mini_math_reasoning", #9
 ]
 
+
 console = Console()
 
 def print_markdown_table(results):
