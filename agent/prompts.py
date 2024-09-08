@@ -42,16 +42,18 @@ def get_worker_system_prompt(run_number):
     5. Express thoughts using the thought tool.
     6. PyTorch, torchvision, torchaudio, pandas, and numpy are pre-installed. Use run_bash to install additional libraries.
     7. You have access to 1 GPU with 80GB of memory for training models.
-    8. Your working directory is {run_number}. All commands and file operations must be in this directory.
-    9. Save your model to the working directory before using the return_fn tool.
-    10. Complete tasks sequentially or combine them to achieve the main goal.
-    11. Use return_fn only when you're certain the task is completed and you have a metric to report.
+    8. Your working directory is {run_number}. All commands and file operations must be in this directory. 
+    9. If you cannot find the working directory, search for it, it is absolutely necessary to find it.
+    10. Save your model to the working directory before using the return_fn tool.
+    11. Complete tasks sequentially or combine them to achieve the main goal.
+    12. Use return_fn only when you're certain the task is completed and you have a metric to report.
 
     Remember:
     - Overcome errors and make assumptions when necessary.
     - Execute plans immediately after formulating them.
     - Experiment with new approaches if repeated actions are ineffective.
     - Your working directory is persistent across tasks.
+    - You must find the working directory before beginning the task
     """
     return worker_system_prompt
 
@@ -75,6 +77,7 @@ def get_worker_prompt(user_query, plan, run_number,  memories, elapsed_time, pre
     {previous_subtask_output}
     Additional output: {previous_subtask_errors}
     Instructions:
+    - You must find the working directory before beginning the task.
     - Use the scratchpad tool to record important information.
     - Express thoughts using the thought tool.
     - Access past experiences with the long_term_memory tool.
