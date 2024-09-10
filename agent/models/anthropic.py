@@ -3,31 +3,30 @@ import anthropic
 from agent.utils import count_tokens
 import json
 
+
 class AnthropicModel:
     def __init__(self, system_prompt, all_tools):
         self.anthropic_client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC"))
         self.system_prompt = system_prompt
         self.all_tools = all_tools
-        
-        
+
     def generate_response(self, prompt):
         prompt_tokens = count_tokens(prompt, "cl100k_base")
         system_prompt_tokens = count_tokens(self.system_prompt, "cl100k_base")
         response = self.anthropic_client.messages.create(
-                    model="claude-3-5-sonnet-20240620",
-                    messages=[
-                        {"role": "user", "content": self.system_prompt + "\n" + prompt},
-                    ],
-                    temperature=0,
-                    max_tokens=1024,
-                    tools=self.all_tools,
-            )
+            model="claude-3-5-sonnet-20240620",
+            messages=[
+                {"role": "user", "content": self.system_prompt + "\n" + prompt},
+            ],
+            temperature=0,
+            max_tokens=1024,
+            tools=self.all_tools,
+        )
         response_data, num_tokens = self.get_anthropic_response(response)
         total_tokens = prompt_tokens + system_prompt_tokens + num_tokens
-        
+
         return response_data, total_tokens
-        
-        
+
     def get_anthropic_response(self, response):
         # Initialize default response data
         response_data = None
@@ -59,11 +58,10 @@ class AnthropicModel:
 
                 if response_data:
                     print("Extracted text from text blocks:", response_data)
-                    
+
                 else:
                     print("No tool use blocks or text blocks found in the response.")
                     return response_data, num_tokens
         else:
             print("No content found in the response.")
             return response_data, 0
-        

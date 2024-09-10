@@ -30,7 +30,13 @@ console = Console()
 
 class Worker:
     def __init__(
-        self, user_id=int, run_id=int, user_query=str, plan=str, worker_number=int, provider=str
+        self,
+        user_id=int,
+        run_id=int,
+        user_query=str,
+        plan=str,
+        worker_number=int,
+        provider=str,
     ) -> None:
         self.user_id = user_id
         self.run_id = run_id
@@ -45,7 +51,7 @@ class Worker:
 
         self.plan_structure = {"subtasks": [], "completed": [], "in_progress": None}
         self.system_prompt = get_worker_system_prompt(self.run_number)
-        
+
         self.memory = AgentMemory()
 
     def pretty_attempt(self, content):
@@ -53,29 +59,36 @@ class Worker:
 
     def pretty_output(self, content):
         return f"[blue] Total Tokens: {sum(self.num_tokens)} --> Previous Output: {content}"
-    
 
-    def run_subtask(self, previous_subtask_attempt, previous_subtask_output, previous_subtask_errors, elapsed_time) -> dict:
+    def run_subtask(
+        self,
+        previous_subtask_attempt,
+        previous_subtask_output,
+        previous_subtask_errors,
+        elapsed_time,
+    ) -> dict:
         memories = self.memory.get_conversation_memory(self.run_id)
-        
+
         self.prompt = get_worker_prompt(
-            self.user_query, 
-            self.plan, 
+            self.user_query,
+            self.plan,
             self.run_number,
-            memories, 
+            memories,
             elapsed_time,
-            previous_subtask_attempt, 
-            previous_subtask_output, 
-            previous_subtask_errors
+            previous_subtask_attempt,
+            previous_subtask_output,
+            previous_subtask_errors,
         )
-        
-        #print(f"Prompt: {self.prompt}")
+
+        # print(f"Prompt: {self.prompt}")
 
         try:
             if self.task_number > 0:  # Only print if it's not the first iteration
                 if isinstance(previous_subtask_attempt, str):
                     user_renderables = [
-                        Panel(self.pretty_attempt(previous_subtask_attempt), expand=True),
+                        Panel(
+                            self.pretty_attempt(previous_subtask_attempt), expand=True
+                        ),
                         Panel(self.pretty_output(previous_subtask_output), expand=True),
                     ]
                     console.print(Panel(Columns(user_renderables)))
@@ -88,9 +101,23 @@ class Worker:
                     )
 
             if self.agent_model == "openai":
-                response_data, total_tokens, prompt_tokens, response_tokens = OpenAIModel(self.system_prompt, all_tools).generate_response(self.prompt)
+                (
+                    response_data,
+                    total_tokens,
+                    prompt_tokens,
+                    response_tokens,
+                ) = OpenAIModel(self.system_prompt, all_tools).generate_response(
+                    self.prompt
+                )
             else:
-                response_data, total_tokens, prompt_tokens, response_tokens = AnthropicModel(self.system_prompt, all_tools).generate_response(self.prompt)
+                (
+                    response_data,
+                    total_tokens,
+                    prompt_tokens,
+                    response_tokens,
+                ) = AnthropicModel(self.system_prompt, all_tools).generate_response(
+                    self.prompt
+                )
 
             self.num_tokens.append(total_tokens)
             print(f"Number of tokens: {total_tokens}")
@@ -119,7 +146,13 @@ class Worker:
                                 }
                             )
                             tool_output = tool_output.run()
-                            return {"subtask_result": tool_output, "attempted": "yes", "total_tokens": total_tokens, "prompt_tokens": prompt_tokens, "response_tokens": response_tokens}
+                            return {
+                                "subtask_result": tool_output,
+                                "attempted": "yes",
+                                "total_tokens": total_tokens,
+                                "prompt_tokens": prompt_tokens,
+                                "response_tokens": response_tokens,
+                            }
                     # If val is a list, iterate through the list and check each item
                     elif isinstance(val, list):
                         if all(
@@ -136,12 +169,26 @@ class Worker:
                                 }
                             )
                             tool_output = tool_output.run()
-                            return {"subtask_result": tool_output, "attempted": "yes", "total_tokens": total_tokens, "prompt_tokens": prompt_tokens, "response_tokens": response_tokens}
+                            return {
+                                "subtask_result": tool_output,
+                                "attempted": "yes",
+                                "total_tokens": total_tokens,
+                                "prompt_tokens": prompt_tokens,
+                                "response_tokens": response_tokens,
+                            }
             else:
-                return {"subtask_result": response_data, "attempted": "yes", "total_tokens": total_tokens, "prompt_tokens": prompt_tokens, "response_tokens": response_tokens}
+                return {
+                    "subtask_result": response_data,
+                    "attempted": "yes",
+                    "total_tokens": total_tokens,
+                    "prompt_tokens": prompt_tokens,
+                    "response_tokens": response_tokens,
+                }
 
         except Exception as e:
-            print(f"An error occurred in the Worker: {str(e)} on line {e.__traceback__.tb_lineno}")
+            print(
+                f"An error occurred in the Worker: {str(e)} on line {e.__traceback__.tb_lineno}"
+            )
             traceback.print_exc()
             return {
                 "subtask_result": {
@@ -154,7 +201,7 @@ class Worker:
                 "attempted": "no",
                 "total_tokens": 0,
                 "prompt_tokens": 0,
-                "response_tokens": 0
+                "response_tokens": 0,
             }
 
     def process_subtasks(self):
@@ -173,48 +220,56 @@ class Worker:
         self.memory.save_conversation_memory(
             self.user_id,
             self.run_id,
-            previous_subtask_tool, 
-            previous_subtask_result, 
-            previous_subtask_attempt, 
-            previous_subtask_output, 
+            previous_subtask_tool,
+            previous_subtask_result,
+            previous_subtask_attempt,
+            previous_subtask_output,
             previous_subtask_errors,
             total_tokens,
             prompt_tokens,
-            response_tokens
+            response_tokens,
         )
 
         while True:
             current_time = datetime.now()
-            
+
             elapsed_time = current_time - self.start_time
             subtask_response = self.run_subtask(
                 previous_subtask_attempt,
                 previous_subtask_output,
                 previous_subtask_errors,
-                elapsed_time
+                elapsed_time,
             )
             if self.task_number > 0:
                 try:
                     previous_subtask_tool = subtask_response["subtask_result"]["tool"]
-                    previous_subtask_result = subtask_response["subtask_result"]["status"]
-                    previous_subtask_attempt = subtask_response["subtask_result"]["attempt"]
-                    previous_subtask_output = subtask_response["subtask_result"]["stdout"]
-                    previous_subtask_errors = subtask_response["subtask_result"]["stderr"]
+                    previous_subtask_result = subtask_response["subtask_result"][
+                        "status"
+                    ]
+                    previous_subtask_attempt = subtask_response["subtask_result"][
+                        "attempt"
+                    ]
+                    previous_subtask_output = subtask_response["subtask_result"][
+                        "stdout"
+                    ]
+                    previous_subtask_errors = subtask_response["subtask_result"][
+                        "stderr"
+                    ]
                     total_tokens = subtask_response["total_tokens"]
                     prompt_tokens = subtask_response["prompt_tokens"]
                     response_tokens = subtask_response["response_tokens"]
-                    
+
                     self.memory.save_conversation_memory(
                         self.user_id,
                         self.run_id,
-                        previous_subtask_tool, 
-                        previous_subtask_result, 
-                        previous_subtask_attempt, 
-                        previous_subtask_output, 
+                        previous_subtask_tool,
+                        previous_subtask_result,
+                        previous_subtask_attempt,
+                        previous_subtask_output,
                         previous_subtask_errors,
                         total_tokens,
                         prompt_tokens,
-                        response_tokens
+                        response_tokens,
                     )
                 except Exception as e:
                     print(f"An error occurred: {e}")
@@ -228,25 +283,29 @@ class Worker:
                         print(subtask_response)
 
                     previous_subtask_tool = "thought"
-                    previous_subtask_attempt = f"You had the thought: {subtask_response}"
+                    previous_subtask_attempt = (
+                        f"You had the thought: {subtask_response}"
+                    )
                     previous_subtask_result = "You had a thought"
-                    previous_subtask_output = "you must now use a tool to complete the task"
+                    previous_subtask_output = (
+                        "you must now use a tool to complete the task"
+                    )
                     previous_subtask_errors = "None"
                     total_tokens = 0
                     prompt_tokens = 0
                     response_tokens = 0
-                    
+
                     self.memory.save_conversation_memory(
                         self.user_id,
                         self.run_id,
-                        previous_subtask_tool, 
-                        previous_subtask_result, 
-                        previous_subtask_attempt, 
-                        previous_subtask_output, 
+                        previous_subtask_tool,
+                        previous_subtask_result,
+                        previous_subtask_attempt,
+                        previous_subtask_output,
                         previous_subtask_errors,
                         total_tokens,
                         prompt_tokens,
-                        response_tokens
+                        response_tokens,
                     )
 
             results.append(subtask_response)
@@ -256,12 +315,12 @@ class Worker:
                     f"Plan execution complete. Worker number {self.worker_number} completed the task"
                 )
                 return {
-                        "plan": self.plan, 
-                        "result": previous_subtask_attempt, 
-                        "total_tokens": sum(self.num_tokens), 
-                        "total_turns": str(self.task_number), 
-                        "run_number": str(self.run_number)
-                        }
+                    "plan": self.plan,
+                    "result": previous_subtask_attempt,
+                    "total_tokens": sum(self.num_tokens),
+                    "total_turns": str(self.task_number),
+                    "run_number": str(self.run_number),
+                }
 
     def run(self):
         worker_result = self.process_subtasks()

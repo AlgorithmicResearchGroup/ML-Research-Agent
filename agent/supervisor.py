@@ -83,9 +83,7 @@ class Supervisor:
         else:
             response = self.client.beta.tools.messages.create(
                 model="claude-3-opus-20240229",  # Choose the appropriate model for your use case
-                messages=[
-                    {"role": "user", "content": self.system_prompt + user_query}
-                ],
+                messages=[{"role": "user", "content": self.system_prompt + user_query}],
                 temperature=0,  # Adjust based on desired creativity
                 max_tokens=1024,  # Adjust based on how detailed the response needs to be
                 tools=self.planner_tool,
@@ -104,12 +102,15 @@ class Supervisor:
         final_plans = []
         for plan_item in plan:
             subtasks = []
-            if isinstance(plan_item, dict) and 'plan' in plan_item:
-                for step in plan_item['plan']:
+            if isinstance(plan_item, dict) and "plan" in plan_item:
+                for step in plan_item["plan"]:
                     subtasks.append({"Subtask": step})
-            elif isinstance(plan_item, dict) and 'Subtask' in plan_item:
-                if isinstance(plan_item['Subtask'], dict) and 'plan' in plan_item['Subtask']:
-                    for step in plan_item['Subtask']['plan']:
+            elif isinstance(plan_item, dict) and "Subtask" in plan_item:
+                if (
+                    isinstance(plan_item["Subtask"], dict)
+                    and "plan" in plan_item["Subtask"]
+                ):
+                    for step in plan_item["Subtask"]["plan"]:
                         subtasks.append({"Subtask": step})
                 else:
                     subtasks.append(plan_item)

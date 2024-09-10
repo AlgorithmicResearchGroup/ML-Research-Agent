@@ -37,6 +37,7 @@ class StreamToConsole(io.StringIO):
         super().flush()
         self.console.flush()
 
+
 class PythonRunnerActor:
     def __init__(self):
         # Initialize an IPython shell instance for running Python code interactively
@@ -92,6 +93,7 @@ class PythonRunnerActor:
         """Wrapper method to execute Python code using the actor's execution method with an optional timeout."""
         return self.execute_python_code(filepath)
 
+
 def run_python(arguments):  # run python code on the server
     """
     This function is used to run python code.
@@ -107,4 +109,3 @@ def run_python(arguments):  # run python code on the server
     result = result_future
     result["stdout"] = remove_ascii(result["stdout"])
     return result
-

@@ -9,6 +9,7 @@ def count_tokens(string: str, encoding_name: str) -> int:
     num_tokens = len(encoding.encode(string))
     return num_tokens
 
+
 def remove_ascii(text):
     pattern = r"[\x00-\x7F]"
     # Replace all ASCII characters with an empty string

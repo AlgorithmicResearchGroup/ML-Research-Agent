@@ -4,7 +4,7 @@ from rich.text import Text
 
 from agent.tools.bash.bash_tool import run_bash, bash_tool_definitions
 from agent.tools.code.code_tool import (
-    #read_code_tool,
+    # read_code_tool,
     write_code,
     insert_code,
     replace_code,
@@ -31,7 +31,10 @@ from agent.tools.scratchpad.scratchpad_tool import (
     scratchpad_tool_definitions,
 )
 from agent.tools.thought.thought_tool import use_thought, thought_tool_definitions
-from agent.tools.long_term_memory.long_term_memory_tool import use_long_term_memory, long_term_memory_tool_definitions
+from agent.tools.long_term_memory.long_term_memory_tool import (
+    use_long_term_memory,
+    long_term_memory_tool_definitions,
+)
 
 # from agent.tools.code_lookup.code_lookup_tool import code_lookup, code_lookup_tool_definitions
 # from agent.tools.code_search.paper_lookup_tool import paper_lookup, paper_lookup_tool_definitions
@@ -63,7 +66,7 @@ worker_action_map = {
     "run_python": "filepath",
     "run_bash": "script",
     "return_fn": ["submission", "model_path"],
-    #"read_code": "path",
+    # "read_code": "path",
     "write_code": ["path", "code"],
     "insert_code": ["path", "target", "new_code"],
     "replace_code": ["path", "old_code", "new_code"],
@@ -112,7 +115,7 @@ class Tool:
             "run_python": run_python,
             "run_bash": run_bash,
             "return_fn": return_fn,
-            #"read_code": read_code_tool,
+            # "read_code": read_code_tool,
             "write_code": write_code,
             "insert_code": insert_code,
             "replace_code": replace_code,

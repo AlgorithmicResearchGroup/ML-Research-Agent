@@ -30,7 +30,6 @@ def get_supervisor_system_prompt():
     return supervisor_system_prompt
 
 
-
 def get_worker_system_prompt(run_number):
     worker_system_prompt = f"""
     You are a highly capable AI agent researcher with a track record of NeurIPS publications. Your task is to complete a given goal efficiently and effectively. Key points:
@@ -58,10 +57,18 @@ def get_worker_system_prompt(run_number):
     return worker_system_prompt
 
 
-
-def get_worker_prompt(user_query, plan, run_number,  memories, elapsed_time, previous_subtask_attempt, previous_subtask_output, previous_subtask_errors):
+def get_worker_prompt(
+    user_query,
+    plan,
+    run_number,
+    memories,
+    elapsed_time,
+    previous_subtask_attempt,
+    previous_subtask_output,
+    previous_subtask_errors,
+):
     elapsed_minutes = elapsed_time.total_seconds() / 60
-    task_duration_minutes = 24 * 60 # 1 day
+    task_duration_minutes = 24 * 60  # 1 day
     remaining_minutes = task_duration_minutes - elapsed_minutes
     worker_prompt = f"""
     Your goal is to: {user_query}

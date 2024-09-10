@@ -21,6 +21,7 @@ long_term_memory_tool_definitions = [
     },
 ]
 
+
 class LongTermMemory:
     def __init__(self):
         self.memory = AgentMemory()
@@ -43,6 +44,7 @@ class LongTermMemory:
                 "stdout": "",
                 "stderr": str(e),
             }
+
 
 def use_long_term_memory(arguments):
     """

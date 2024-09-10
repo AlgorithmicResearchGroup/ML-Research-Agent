@@ -112,8 +112,7 @@ class PythonEditorActor:
             with open(self.file_path, "w") as file:
                 code = ""
         return code
-        
-        
+
     # def read_code_tool(self):
     #     try:
     #         with open(self.file_path, "r") as file:
@@ -125,7 +124,7 @@ class PythonEditorActor:
     #                 "stdout": f"The code in the file is: \n {code}",
     #                 "stderr": "",
     #             }
-        
+
     #     except Exception as e:
     #         return {
     #             "tool": "read_code",
@@ -134,7 +133,6 @@ class PythonEditorActor:
     #             "stdout": str(e),
     #             "stderr": "Failed to read the code in the file",
     #         }
-
 
     def write_code(self, code):
         try:
@@ -252,6 +250,7 @@ class PythonEditorActor:
 #     editor_actor = PythonEditorActor(path)
 #     result = editor_actor.read_code_tool()
 #     return result
+
 
 def write_code(arguments):  # write code to a file
     """

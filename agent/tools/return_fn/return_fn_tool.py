@@ -30,9 +30,9 @@ def return_fn(arguments):
     This function is used to return the answer to the task.
     Use this function to run the code you need to complete the task.
     """
-    submission = arguments['submission']
-    model_path = arguments['model_path']
-    
+    submission = arguments["submission"]
+    model_path = arguments["model_path"]
+
     try:
         return {
             "tool": "return_fn",

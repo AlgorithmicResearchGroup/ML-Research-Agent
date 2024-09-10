@@ -38,7 +38,7 @@ class BashRunnerActor:
                 stderr=subprocess.PIPE,
                 text=True,
             )
-            
+
             # Read the output line by line and print it
             terminal_output = []
             while True:
@@ -48,10 +48,9 @@ class BashRunnerActor:
                 if output:
                     print(output.strip())
                     terminal_output.append(output.strip())
-                    
-                    
+
             terminal_output = "\n".join(terminal_output)
-                    
+
             error = process.stderr.read()
             if error:
                 print("Error:", error.strip())
