@@ -19,7 +19,7 @@ logging.getLogger("sqlalchemy").setLevel(logging.ERROR)
 
 
 class AgentConversation(Base):
-    __tablename__ = "benchmark_full_benchmark"
+    __tablename__ = "test_table3"
     id = Column(Integer, primary_key=True)
     run_id = Column(BigInteger, nullable=False)
     tool = Column(String)
@@ -27,6 +27,9 @@ class AgentConversation(Base):
     attempt = Column(String)
     stdout = Column(String)
     stderr = Column(String)
+    total_tokens = Column(Integer)
+    prompt_tokens = Column(Integer)
+    response_tokens = Column(Integer)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.datetime.utcnow)
     user_id = Column(Integer)
@@ -44,7 +47,7 @@ class AgentMemory:
         # Initialize sentence transformer for encoding
         self.encoder = SentenceTransformer('all-MiniLM-L6-v2')
 
-    def save_conversation_memory(self, user_id, run_id, previous_subtask_tool, previous_subtask_result, previous_subtask_attempt, previous_subtask_output, previous_subtask_errors):
+    def save_conversation_memory(self, user_id, run_id, previous_subtask_tool, previous_subtask_result, previous_subtask_attempt, previous_subtask_output, previous_subtask_errors, total_tokens, prompt_tokens, response_tokens):
         session = self.Session()
         try:
             memory_text = f"Run ID: {run_id}\nUser ID: {user_id}\nTool: {previous_subtask_tool}\nStatus: {previous_subtask_result}\nAttempt: {previous_subtask_attempt}\nStdout: {previous_subtask_output}\nStderr: {previous_subtask_errors}"
@@ -58,7 +61,10 @@ class AgentMemory:
                 attempt=str(previous_subtask_attempt),
                 stdout=str(previous_subtask_output),
                 stderr=str(previous_subtask_errors),
-                embedding=embedding
+                embedding=embedding,
+                total_tokens=total_tokens,
+                prompt_tokens=prompt_tokens,
+                response_tokens=response_tokens
             )
             session.add(conversation)
             session.commit()
@@ -84,6 +90,9 @@ class AgentMemory:
                     "attempt": conversation.attempt,
                     "stdout": conversation.stdout,
                     "stderr": conversation.stderr,
+                    "total_tokens": conversation.total_tokens,
+                    "prompt_tokens": conversation.prompt_tokens,
+                    "response_tokens": conversation.response_tokens
                 })
 
             # Combine short-term and long-term memories

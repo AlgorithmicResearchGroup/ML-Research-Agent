@@ -31,8 +31,7 @@ class OpenAIModel:
         available_tokens = self.max_tokens - system_prompt_tokens - 100  # Reserve some tokens for the response
         
         truncated_prompt = self.truncate_prompt(prompt, available_tokens)
-        
-        #print(f"Truncated prompt: {truncated_prompt}")
+        prompt_tokens = len(self.encode_text(truncated_prompt))
         
         response = self.oai_client.chat.completions.create(
             model="gpt-4o",
@@ -42,11 +41,10 @@ class OpenAIModel:
             ],
             tools=[anthropic_to_openai(tool) for tool in self.all_tools],
         )
-        response_data, num_tokens = self.get_openai_response(response)
-        total_tokens = len(self.encode_text(truncated_prompt)) + system_prompt_tokens + num_tokens
+        response_data, response_tokens = self.get_openai_response(response)
+        total_tokens = system_prompt_tokens + prompt_tokens + response_tokens
         
-        return response_data, total_tokens
-        
+        return response_data, total_tokens, prompt_tokens, response_tokens
         
     def get_openai_response(self, response):
         # Initialize default response data
@@ -59,23 +57,14 @@ class OpenAIModel:
                     and choice.finish_reason == "tool_calls"
                 ):
                     response_data = choice.message.tool_calls[0].function.arguments
-                    num_tokens = count_tokens(response_data, "cl100k_base")
+                    response_tokens = count_tokens(response_data, "cl100k_base")
                     response_data = json.loads(response_data)
-                    return response_data, num_tokens
+                    return response_data, response_tokens
                 else:
                     print("No tool calls found in this choice.")
                     response_data = choice.message.content
-                    num_tokens = count_tokens(response_data, "cl100k_base")
-                    return response_data, num_tokens
+                    response_tokens = count_tokens(response_data, "cl100k_base")
+                    return response_data, response_tokens
             else:
                 print("No choices found in the response.")
                 return response_data, 0
-        
-        
-        
-    
-        
-        
-        
-        
-        
