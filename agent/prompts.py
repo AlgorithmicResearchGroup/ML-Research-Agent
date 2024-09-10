@@ -64,25 +64,36 @@ def get_worker_prompt(user_query, plan, run_number,  memories, elapsed_time, pre
     task_duration_minutes = 24 * 60 # 1 day
     remaining_minutes = task_duration_minutes - elapsed_minutes
     worker_prompt = f"""
-    Goal to complete: {user_query}
-    Working directory: {run_number}
+    Your goal is to: {user_query}
+    Your working directory is: {run_number}
+    Time spent: {elapsed_minutes:.2f} minutes. Remaining: {remaining_minutes:.2f} minutes.
+    
     Plan outline:
     {plan}
-    Time spent: {elapsed_minutes:.2f} minutes. Remaining: {remaining_minutes:.2f} minutes.
+    
+    
     Last 10 actions:
     {memories}
+    
     Previous attempt:
     {previous_subtask_attempt}
+    
     Previous output:
     {previous_subtask_output}
+    
     Additional output: {previous_subtask_errors}
+    
     Instructions:
     - You must find the working directory before beginning the task.
     - Use the scratchpad tool to record important information.
     - Express thoughts using the thought tool.
     - Access past experiences with the long_term_memory tool.
-    - Use return_fn only when the goal is completed and the baseline metric is beaten.
+    - When you have trained a model, you must return the final metric from the evaluation
+    - Use return_fn only when the goal is completed
     - Save the model to the working directory before using return_fn.
-    Proceed with the next step to complete the goal.
+    Think carefully about what you have done and what you have not done. 
+    Do not take unnecessary steps. Complete only what is necessary.
+    If you have trained a model, submit it with return_fn.
+    Think step by step before acting.
     """
     return worker_prompt
