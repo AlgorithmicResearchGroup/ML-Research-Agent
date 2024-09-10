@@ -37,7 +37,7 @@ COPY . /app
 # Install the required Python packages
 RUN pip3 install -r requirements.txt 
 RUN pip3 install -i https://test.pypi.org/simple/ agent-tasks
-RUN pip3 install -i https://test.pypi.org/simple/ agent-eval
+RUN pip3 install -i https://test.pypi.org/simple/ -U agent-eval
 
 # Set the NVIDIA_VISIBLE_DEVICES environment variable
 # This will be overridden by the docker run command
