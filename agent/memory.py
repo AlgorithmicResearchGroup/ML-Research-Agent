@@ -28,7 +28,7 @@ logging.getLogger("sqlalchemy").setLevel(logging.ERROR)
 
 
 class AgentConversation(Base):
-    __tablename__ = "test_table3"
+    __tablename__ = "full_benchmark"
     id = Column(Integer, primary_key=True)
     run_id = Column(BigInteger, nullable=False)
     tool = Column(String)
