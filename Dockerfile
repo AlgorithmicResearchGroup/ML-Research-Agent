@@ -1,4 +1,4 @@
-# Use CUDA 12.1 base image
+# Use CUDA 12.2.2 base image
 FROM nvidia/cuda:12.2.2-cudnn8-runtime-ubuntu22.04
 
 # Accept build-time arguments
@@ -12,6 +12,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     PROVIDER=$PROVIDER \
     NVIDIA_VISIBLE_DEVICES=all
 
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     software-properties-common \
     wget \
@@ -27,21 +28,22 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-
-
 WORKDIR /app
 
 # Copy the Python script and requirements to the working directory
 COPY . /app
 
-# Install the required Python packages
-RUN pip3 install -r requirements.txt 
-RUN pip3 install -i https://test.pypi.org/simple/ agent-tasks
-RUN pip3 install -i https://test.pypi.org/simple/ -U agent-eval
+# Upgrade pip and install wheel
+RUN pip3 install --no-cache-dir --upgrade pip setuptools wheel
 
-# Set the NVIDIA_VISIBLE_DEVICES environment variable
-# This will be overridden by the docker run command
-ENV NVIDIA_VISIBLE_DEVICES=all
+# Install common dependencies from PyPI
+RUN pip3 install tqdm click tabulate evaluate datasets transformers bitsandbytes onnx onnxruntime-gpu urllib3 rouge_score protobuf accelerate rich optimum
+
+RUN pip3 install -i https://test.pypi.org/simple/ --no-deps agent-eval==0.1.13
+
+RUN pip3 install -r requirements.txt 
+
+RUN pip3 install -i https://test.pypi.org/simple/ agent-tasks
 
 # Set environment variables from build args
 ENV TASK_NAME=$TASK_NAME
