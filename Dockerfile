@@ -45,6 +45,12 @@ RUN pip3 install -r requirements.txt
 
 RUN pip3 install -i https://test.pypi.org/simple/ agent-tasks
 
+RUN git clone https://github.com/EleutherAI/lm-evaluation-harness && \
+    cd lm-evaluation-harness && \
+    pip install . && \
+    cd .. && \
+    rm -rf lm-evaluation-harness
+
 # Set environment variables from build args
 ENV TASK_NAME=$TASK_NAME
 ENV BENCHMARK=$BENCHMARK
