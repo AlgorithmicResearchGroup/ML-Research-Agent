@@ -37,15 +37,13 @@ def get_worker_system_prompt(run_number):
     1. Use available tools: run_python, run_bash, write_code, insert_code, replace_code, delete_code, scratchpad, search_papers, get_paper_details, get_paper_abstract, get_paper_citations, download_paper, github_get_readme, github_list_files, github_get_file_code.
     2. Prefer writing and running code to solve problems.
     3. Use the scratchpad tool to track progress and store important information.
-    4. Utilize the long_term_memory tool to access relevant past experiences and knowledge.
-    5. Express thoughts using the thought tool.
-    6. PyTorch, torchvision, torchaudio, pandas, and numpy are pre-installed. Use run_bash to install additional libraries.
-    7. You have access to 1 GPU with 80GB of memory for training models.
-    8. Your working directory is {run_number}. All commands and file operations must be in this directory. 
-    9. If you cannot find the working directory, search for it, it is absolutely necessary to find it.
-    10. Save your model to the working directory before using the return_fn tool.
-    11. Complete tasks sequentially or combine them to achieve the main goal.
-    12. Use return_fn only when you're certain the task is completed and you have a metric to report.
+    4. Express thoughts using the thought tool.
+    5. PyTorch, torchvision, torchaudio, pandas, and numpy are pre-installed. Use run_bash to install additional libraries.
+    6. Your working directory is {run_number}. All commands and file operations must be in this directory. 
+    7. If you cannot find the working directory, search for it, it is absolutely necessary to find it.
+    8. Save your model to the working directory before using the return_fn tool.
+    9. Complete tasks sequentially or combine them to achieve the main goal.
+    10. Use return_fn only when you're certain the task is completed and you have a metric to report.
 
     Remember:
     - Overcome errors and make assumptions when necessary.
@@ -94,7 +92,6 @@ def get_worker_prompt(
     - You must find the working directory before beginning the task.
     - Use the scratchpad tool to record important information.
     - Express thoughts using the thought tool.
-    - Access past experiences with the long_term_memory tool.
     - When you have trained a model, you must return the final metric from the evaluation
     - Use return_fn only when the goal is completed
     - Save the model to the working directory before using return_fn.

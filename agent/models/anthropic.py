@@ -34,7 +34,7 @@ class AnthropicModel:
         response = self.anthropic_client.messages.create(
             model="claude-3-5-sonnet-20240620",
             messages=[
-                {"role": "user", "content": self.system_prompt + "\n" + truncated_prompt},
+                {"role": "user", "content": self.system_prompt + "\n" + prompt},
             ],
             temperature=0,
             max_tokens=1024,
@@ -46,19 +46,38 @@ class AnthropicModel:
         return response_data, total_tokens, prompt_tokens, response_tokens
 
     def get_anthropic_response(self, response):
+        # Initialize default response data
         response_data = None
-        response_tokens = 0
-
+        # Ensure the 'content' field exists and is not empty
         if hasattr(response, "content") and len(response.content) > 0:
-            tool_use_blocks = [block for block in response.content if block.type == "tool_use"]
+            tool_use_blocks = [
+                block for block in response.content if block.type == "tool_use"
+            ]
+            # Process the first tool use block, if any
             if tool_use_blocks:
                 first_tool_use_block = tool_use_blocks[0]
-                if hasattr(first_tool_use_block, "input") and first_tool_use_block.input:
-                    response_data = first_tool_use_block.input  # Already a dict, no need for json.loads()
-                    response_tokens = count_tokens(json.dumps(response_data), "cl100k_base")
+                # Assuming the input or relevant details are in the 'input' attribute of the tool use block
+                if (
+                    hasattr(first_tool_use_block, "input")
+                    and first_tool_use_block.input
+                ):
+                    response_data = first_tool_use_block.input
+                    num_tokens = 0
+                return response_data, num_tokens
             else:
-                text_blocks = [block.text for block in response.content if block.type == "text"]
+                # No tool use blocks found; defaulting to extracting text from text blocks
+                text_blocks = [
+                    block.text for block in response.content if block.type == "text"
+                ]
                 response_data = " ".join(text_blocks) if text_blocks else None
-                response_tokens = count_tokens(response_data, "cl100k_base") if response_data else 0
+                num_tokens = 0
 
-        return response_data, response_tokens
+                if response_data:
+                    print("Extracted text from text blocks:", response_data)
+
+                else:
+                    print("No tool use blocks or text blocks found in the response.")
+                    return response_data, num_tokens
+        else:
+            print("No content found in the response.")
+            return response_data, 0
