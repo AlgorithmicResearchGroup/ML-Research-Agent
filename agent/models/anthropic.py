@@ -54,7 +54,7 @@ class AnthropicModel:
             if tool_use_blocks:
                 first_tool_use_block = tool_use_blocks[0]
                 if hasattr(first_tool_use_block, "input") and first_tool_use_block.input:
-                    response_data = json.loads(first_tool_use_block.input)
+                    response_data = first_tool_use_block.input  # Already a dict, no need for json.loads()
                     response_tokens = count_tokens(json.dumps(response_data), "cl100k_base")
             else:
                 text_blocks = [block.text for block in response.content if block.type == "text"]
