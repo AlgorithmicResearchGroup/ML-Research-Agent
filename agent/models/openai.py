@@ -11,7 +11,7 @@ class OpenAIModel:
         self.system_prompt = system_prompt
         self.oai_client = OpenAI(api_key=os.getenv("OPENAI"))
         self.all_tools = all_tools
-        self.max_tokens = 8192  # Maximum tokens for GPT-4
+        self.max_tokens = 124000   # Maximum tokens for GPT-4
         self.encoding = tiktoken.get_encoding("cl100k_base")
 
     def encode_text(self, text):

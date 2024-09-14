@@ -98,6 +98,7 @@ def get_worker_prompt(
     - When you have trained a model, you must return the final metric from the evaluation
     - Use return_fn only when the goal is completed
     - Save the model to the working directory before using return_fn.
+    - Think critically about the resources you have
     Think carefully about what you have done and what you have not done. 
     Do not take unnecessary steps. Complete only what is necessary.
     If you have trained a model, submit it with return_fn.
