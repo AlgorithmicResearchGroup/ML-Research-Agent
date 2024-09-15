@@ -109,5 +109,4 @@ MIT
 
 ## Contact
 
-
 For questions or support, please contact Algorithmic Research Group at matt@algorithmicresearchgroup.com
