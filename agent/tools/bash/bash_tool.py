@@ -30,91 +30,86 @@ class BashRunnerActor:
         """Method to execute a bash command and return the results."""
         logging.info(f"Executing command: {command}")
 
+        result = {
+            "tool": "run_bash",
+            "status": "failure",
+            "returncode": None,
+            "attempt": command,
+            "stdout": "",
+            "stderr": "",
+        }
+
         try:
+            # Start the subprocess with unbuffered output
             process = subprocess.Popen(
                 command,
                 shell=True,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True,
+                bufsize=1,
+                universal_newlines=True,
             )
 
-            # Read the output line by line and print it
-            terminal_output = []
-            while True:
-                output = process.stdout.readline()
-                if not output and process.poll() is not None:
-                    break
-                if output:
-                    print(output.strip())
-                    terminal_output.append(output.strip())
+            stdout_lines = []
+            stderr_lines = []
 
-            terminal_output = "\n".join(terminal_output)
+            import threading
+            import sys
 
-            error = process.stderr.read()
-            if error:
-                print("Error:", error.strip())
+            def read_stdout():
+                for line in iter(process.stdout.readline, ''):
+                    print(line, end='')  # Print to console
+                    stdout_lines.append(line)
 
-            try:
-                stdout, stderr = process.communicate(timeout=self.timeout)
-            except subprocess.TimeoutExpired:
-                process.kill()
-                stdout, stderr = process.communicate()
-                raise subprocess.TimeoutExpired(
-                    process.args, self.timeout, output=stdout, stderr=stderr
-                )
+            def read_stderr():
+                for line in iter(process.stderr.readline, ''):
+                    print(line, end='', file=sys.stderr)  # Print errors to stderr
+                    stderr_lines.append(line)
+
+            stdout_thread = threading.Thread(target=read_stdout)
+            stderr_thread = threading.Thread(target=read_stderr)
+
+            stdout_thread.start()
+            stderr_thread.start()
+
+            # Wait for the process to finish
+            process.wait(timeout=self.timeout)
+
+            # Wait for threads to finish reading
+            stdout_thread.join()
+            stderr_thread.join()
 
             returncode = process.returncode
+            result['returncode'] = returncode
+
+            result["stdout"] = ''.join(stdout_lines)
+            result["stderr"] = ''.join(stderr_lines)
 
             if returncode == 0:
-                status = "success"
+                result["status"] = "success"
             else:
-                status = "failure"
+                result["status"] = "failure"
                 logging.error(f"Command failed with returncode: {returncode}")
-                logging.error(f"Command stderr:\n{error.strip()}")
+                logging.error(f"Command stderr:\n{result['stderr']}")
 
-            return {
-                "tool": "run_bash",
-                "status": status,
-                "returncode": returncode,
-                "attempt": command,
-                "stdout": terminal_output,
-                "stderr": error.strip(),
-            }
+            return result
 
-        except subprocess.TimeoutExpired as e:
-            logging.error(f"Command timed out after {self.timeout} seconds")
-            return {
-                "tool": "run_bash",
-                "status": "failure",
-                "returncode": None,
-                "attempt": command,
-                "stdout": "",
-                "stderr": f"Command timed out after {self.timeout} seconds",
-            }
-
-        except subprocess.CalledProcessError as e:
-            logging.error(f"Command failed with returncode: {e.returncode}")
-            logging.error(f"Command stderr:\n{e.stderr}")
-            return {
-                "tool": "run_bash",
-                "status": "failure",
-                "returncode": e.returncode,
-                "attempt": command,
-                "stdout": "",
-                "stderr": f"Command failed with returncode: {e.returncode}\nError message: {error.strip()}",
-            }
+        except subprocess.TimeoutExpired:
+            process.kill()
+            stdout_thread.join()
+            stderr_thread.join()
+            result["stderr"] = f"Command timed out after {self.timeout} seconds"
+            logging.error(result["stderr"])
+            return result
 
         except Exception as e:
-            logging.exception(f"Unexpected error while executing command: {str(e)}")
-            return {
-                "tool": "run_bash",
-                "status": "failure",
-                "returncode": None,
-                "attempt": command,
-                "stdout": "",
-                "stderr": f"Unexpected error: {str(e)}",
-            }
+            process.kill()
+            stdout_thread.join()
+            stderr_thread.join()
+            result["stderr"] = f"Unexpected error: {str(e)}"
+            logging.exception(result["stderr"])
+            return result
 
 
 def run_bash(arguments: dict) -> Dict[str, Optional[str]]:
