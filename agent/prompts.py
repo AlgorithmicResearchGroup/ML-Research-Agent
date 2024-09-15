@@ -97,8 +97,8 @@ def get_worker_prompt(
     - Save the model to the working directory before using return_fn.
     - Think critically about the compute resources you have and the amount of time left to complete the task
     Think carefully about what you have done and what you have not done. 
+    Prioritize writing and running code.
     Do not take unnecessary steps. Complete only what is necessary.
     If you have trained a model, submit it with return_fn.
-    Think step by step before acting.
     """
     return worker_prompt
