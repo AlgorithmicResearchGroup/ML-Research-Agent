@@ -81,7 +81,7 @@ worker_action_map = {
     "get_paper_citations": "paper_id",
     "download_paper": "paper_id",
     "thought": "thought",
-    "long_term_memory": ["query", "run_id"],
+    #"long_term_memory": ["query", "run_id"],
     # "lookup_papers": "query",
     # "lookup_code": "query"
 }
@@ -129,7 +129,7 @@ class Tool:
             "get_paper_citations": get_paper_citations,
             "download_paper": download_paper,
             "thought": use_thought,
-            "long_term_memory": use_long_term_memory,
+            #"long_term_memory": use_long_term_memory,
             # "code_lookup": code_lookup,
             # "paper_lookup": paper_lookup
         }
