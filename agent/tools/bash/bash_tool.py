@@ -23,7 +23,7 @@ bash_tool_definitions = [
 
 
 class BashRunnerActor:
-    def __init__(self, timeout: int = 1000):
+    def __init__(self, timeout: int = 1000000):
         self.timeout = timeout
 
     def run(self, command: str) -> Dict[str, Optional[str]]:
