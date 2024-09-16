@@ -42,6 +42,7 @@ RUN pip3 install tqdm click tabulate evaluate datasets transformers bitsandbytes
 RUN pip3 install -i https://test.pypi.org/simple/ --no-deps agent-eval==0.1.13
 
 RUN pip3 install -r requirements.txt 
+RUN pip3 install -U "huggingface_hub[cli]"
 
 RUN pip3 install -i https://test.pypi.org/simple/ agent-tasks
 
@@ -55,6 +56,6 @@ RUN git clone https://github.com/EleutherAI/lm-evaluation-harness && \
 ENV TASK_NAME=$TASK_NAME
 ENV BENCHMARK=$BENCHMARK
 ENV PROVIDER=$PROVIDER
-RUN huggingface-cli login --token $HUGGINGFACE_TOKEN
-# Run the Python script
-CMD ["sh", "-c", "python3 run.py --task_name ${TASK_NAME} --benchmark ${BENCHMARK} --provider ${PROVIDER}"]
+
+# Modify the CMD to include the Huggingface login
+CMD ["sh", "-c", "huggingface-cli login --token $HUGGINGFACE_TOKEN && python3 run.py --task_name ${TASK_NAME} --benchmark ${BENCHMARK} --provider ${PROVIDER}"]
