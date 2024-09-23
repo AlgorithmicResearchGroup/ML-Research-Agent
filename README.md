@@ -65,8 +65,8 @@ These tools can be used individually or in combination to tackle a wide range of
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/your-repo/ai-research-benchmark-baseline-agent.git
-   cd ai-research-benchmark-baseline-agent
+   git clone https://github.com/AlgorithmicResearchGroup/ML-Research-Agent.git
+   cd ML-Research-Agent
    ```
 
 2. Install dependencies:
@@ -105,7 +105,7 @@ Contributions to improve the baseline agent or add new tasks are welcome. Please
 
 ## License
 
-MIT
+AGPL-3.0
 
 ## Contact
 
