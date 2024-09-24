@@ -81,18 +81,24 @@ These tools can be used individually or in combination to tackle a wide range of
 To run the agent without Docker, use the following command:
 
 ```bash
-python3 run.py --task_name smoke_test --benchmark mini_benchmark --provider openai
+python3 run.py --task_name llm_efficiency --benchmark full_benchmark --provider openai
 ```
 
 ### Running with Docker
 
 ```bash
-bash run.sh <image_name> <benchmark> <provider> <gpu_ids> <task_name> <time_limit> <env_file_path>
+bash run.sh <image_name> <benchmark> <provider> <gpu_ids> <task_name> <time_limit> <huggingface_token> <env_file_path>
 ```
 
 Example:
 ```bash
-bash run.sh algorithmicresearch/agent:latest mini_benchmark openai 0 mini_mini_pile 2h /home/ubuntu/.env
+bash run.sh algorithmicresearch/agent:latest full_benchmark \
+    openai \
+    0 \
+    math_reasoning \
+    24h \
+    <huggingface_token> \
+    /home/ubuntu/.env
 ```
 
 ## Available Tasks
