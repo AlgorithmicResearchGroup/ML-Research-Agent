@@ -77,7 +77,7 @@ if __name__ == "__main__":
     argparse = ArgumentParser()
 
     argparse.add_argument(
-        "--task_name", choices=tasks, default="mini_baby_lm", help="The task to run"
+        "--task_name", choices=tasks, default="babylm", help="The task to run"
     )
     argparse.add_argument(
         "--benchmark",

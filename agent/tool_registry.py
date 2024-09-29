@@ -4,7 +4,6 @@ from rich.text import Text
 
 from agent.tools.bash.bash_tool import run_bash, bash_tool_definitions
 from agent.tools.code.code_tool import (
-    # read_code_tool,
     write_code,
     insert_code,
     replace_code,
@@ -36,29 +35,44 @@ from agent.tools.long_term_memory.long_term_memory_tool import (
     long_term_memory_tool_definitions,
 )
 
-# from agent.tools.code_lookup.code_lookup_tool import code_lookup, code_lookup_tool_definitions
-# from agent.tools.code_search.paper_lookup_tool import paper_lookup, paper_lookup_tool_definitions
+from agent.tools.internet.internet_tool import search_the_internet, internet_search_tool_definitions
+from agent.tools.paperswithcode.paperswithcode_tool import (
+    get_code_links,
+    get_paper_details_pwc,
+    search_paperswithcode,
+    paperswithcode_tool_definitions,
+)
 
 
-def collect_all_tools(*lists):
+def collect_tools(*lists):
     merged_list = []
     for lst in lists:
         merged_list.extend(lst)
     return merged_list
 
 
-all_tools = collect_all_tools(
-    bash_tool_definitions,
+coding_agent_tools = collect_tools(
     code_tool_definitions,
     github_tool_definitions,
-    semantic_scholar_tool_definitions,
+    scratchpad_tool_definitions,
+    thought_tool_definitions,
+)
+
+execution_agent_tools = collect_tools(
+    bash_tool_definitions,
     python_tool_definitions,
     return_fn_tool_definitions,
     scratchpad_tool_definitions,
     thought_tool_definitions,
-    long_term_memory_tool_definitions,
-    # code_lookup_tool_definitions,
-    # paper_lookup_tool_definitions
+)
+
+
+research_agent_tools = collect_tools(
+    internet_search_tool_definitions,
+    semantic_scholar_tool_definitions,
+    scratchpad_tool_definitions,
+    thought_tool_definitions,
+    paperswithcode_tool_definitions,
 )
 
 
@@ -66,7 +80,6 @@ worker_action_map = {
     "run_python": "filepath",
     "run_bash": "script",
     "return_fn": ["submission", "model_path"],
-    # "read_code": "path",
     "write_code": ["path", "code"],
     "insert_code": ["path", "target", "new_code"],
     "replace_code": ["path", "old_code", "new_code"],
@@ -75,15 +88,16 @@ worker_action_map = {
     "github_get_readme": "repo_url",
     "github_list_files": "repo_url",
     "github_get_file_code": ["repo_url", "file_path"],
-    "search_papers": "query",
+    # "search_papers": "query",
     "get_paper_details": "paper_id",
     "get_paper_abstract": "paper_id",
     "get_paper_citations": "paper_id",
     "download_paper": "paper_id",
     "thought": "thought",
-    #"long_term_memory": ["query", "run_id"],
-    # "lookup_papers": "query",
-    # "lookup_code": "query"
+    "search_the_internet": "query",
+    "search_paperswithcode": "query",
+    "get_code_links": "paper_id",
+    "get_paper_details_pwc": "paper_id",
 }
 
 
@@ -115,7 +129,6 @@ class Tool:
             "run_python": run_python,
             "run_bash": run_bash,
             "return_fn": return_fn,
-            # "read_code": read_code_tool,
             "write_code": write_code,
             "insert_code": insert_code,
             "replace_code": replace_code,
@@ -124,14 +137,15 @@ class Tool:
             "github_get_readme": github_get_readme,
             "github_list_files": github_list_files,
             "github_get_file_code": github_get_file_code,
-            "search_papers": search_papers,
+            #"search_papers": search_papers,
             "get_paper_details": get_paper_details,
             "get_paper_citations": get_paper_citations,
             "download_paper": download_paper,
             "thought": use_thought,
-            #"long_term_memory": use_long_term_memory,
-            # "code_lookup": code_lookup,
-            # "paper_lookup": paper_lookup
+            "search_the_internet": search_the_internet,
+            "search_paperswithcode": search_paperswithcode,
+            "get_code_links": get_code_links,
+            "get_paper_details_pwc": get_paper_details_pwc,
         }
 
         if self.task["type"] == "function":

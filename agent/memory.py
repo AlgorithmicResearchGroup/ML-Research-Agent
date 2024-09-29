@@ -28,9 +28,10 @@ logging.getLogger("sqlalchemy").setLevel(logging.ERROR)
 
 
 class AgentConversation(Base):
-    __tablename__ = "full_benchmark_anthropic"
+    __tablename__ = "test_multiagent"
     id = Column(Integer, primary_key=True)
     run_id = Column(BigInteger, nullable=False)
+    task_id = Column(Integer)
     tool = Column(String)
     status = Column(String)
     attempt = Column(String)
@@ -59,6 +60,7 @@ class AgentMemory:
         self,
         user_id,
         run_id,
+        task_id,  # New parameter
         previous_subtask_tool,
         previous_subtask_result,
         previous_subtask_attempt,
@@ -76,6 +78,7 @@ class AgentMemory:
             conversation = AgentConversation(
                 user_id=user_id,
                 run_id=run_id,
+                task_id=task_id, 
                 tool=str(previous_subtask_tool),
                 status=str(previous_subtask_result),
                 attempt=str(previous_subtask_attempt),
