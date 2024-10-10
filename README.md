@@ -8,7 +8,6 @@ The ML Research Benchmark Baseline Agent is a multi-agent system designed to ser
 - Supports multiple AI/ML tasks
 - Compatible with different LLM providers (OpenAI, Anthropic)
 - Dockerized for easy deployment and reproducibility
-- Configurable for various benchmark scenarios
 
 
 [![Example Video](./img/example1.png)](https://www.youtube.com/watch?v=Xhpe8MHk56w)
@@ -20,13 +19,10 @@ The baseline agent can perform the following tasks:
 - LLM Efficiency
 - Baby Language Model (LM)
 - Mini Pile
-- Budget Model Training
-- Budget Inference
 - LLM Merging
 - Edge LLM Compression
 - Edge LLM Training
 - Math Reasoning (Autoformalization, Autoinformalization, Autotheorem Generation)
-- Automated Problem Solving with Code
 
 Mini versions of several tasks are also available for quick testing and development.
 
