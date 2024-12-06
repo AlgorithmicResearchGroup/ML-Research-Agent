@@ -88,7 +88,7 @@ bash run.sh <image_name> <benchmark> <provider> <gpu_ids> <task_name> <time_limi
 
 Example:
 ```bash
-bash run.sh algorithmicresearch/agent:latest full_benchmark \
+bash run.sh ghcr.io/algorithmicresearchgroup/ml-research-agent full_benchmark \
     openai \
     0 \
     math_reasoning \
