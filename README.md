@@ -8,6 +8,7 @@ The ML Research Benchmark Baseline Agent is an agentic system designed to serve 
 - [:robot: ML Research Agent](https://github.com/AlgorithmicResearchGroup/ML-Research-Agent)
 - [:white_check_mark: ML Research Tasks](https://github.com/AlgorithmicResearchGroup/ML-Research-Agent-Tasks)
 - [:chart_with_upwards_trend: ML Research Evaluation](https://github.com/AlgorithmicResearchGroup/ML-Research-Agent-Evals)
+- [:notebook: Full Documentation](https://mlresearchbench.com/)
 
 
 ## Features
