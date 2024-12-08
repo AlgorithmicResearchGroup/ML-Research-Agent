@@ -7,7 +7,7 @@ from tqdm import tqdm
 import numpy as np
 import tiktoken
 from datasets import load_dataset  # huggingface datasets
-from agent_tasks import get_task
+from mlrb_agent_tasks import get_task
 
 
 def make_directory(work_dir):
