@@ -44,7 +44,7 @@ RUN pip3 install -i https://test.pypi.org/simple/ --no-deps agent-eval==0.1.13
 RUN pip3 install -r requirements.txt 
 RUN pip3 install -U "huggingface_hub[cli]"
 
-RUN pip3 install -i https://test.pypi.org/simple/ agent-tasks
+RUN pip3 install mlrb-agent-tasks
 
 RUN git clone https://github.com/EleutherAI/lm-evaluation-harness && \
     cd lm-evaluation-harness && \
